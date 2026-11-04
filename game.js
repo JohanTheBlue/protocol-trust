@@ -922,7 +922,6 @@ function updateHUD(){
   $('ops-fill').style.width=state.operations+'%'; $('security-fill').style.width=state.security+'%';
   $('time-value').textContent=minuteClock(state.seconds);
   $('time-penalty').textContent=speedStatus();
-  $('escalations-left').textContent='POLICY-BASED ROUTING';
   const canPlay=state.screen==='play';
   $('action-forward').disabled=!canPlay;
   $('action-review').disabled=!canPlay;
@@ -1373,7 +1372,7 @@ function renderEvidenceMail(c){
 }
 function renderCase(){
   const c=CASES[state.index]; if(!c)return;
-  $('queue-label').textContent=`ITEM ${String(state.index+1).padStart(3,'0')} / ${String(TOTAL_CASES).padStart(3,'0')}`;
+  $('queue-label').textContent=`${String(state.index+1).padStart(2,'0')} / ${TOTAL_CASES}`;
   $('mail-id').textContent='REF: '+c.id;
   $('mail-from').textContent=c.from;
   $('mail-to').textContent=c.to;
@@ -1396,13 +1395,12 @@ function startGame(){
 }
 function openIntro(){
   state.screen='intro';renderCase();updateHUD();
-  modal(`<p class="modal-kicker">◈ &nbsp; CYBER AWARENESS SIMULATOR / v0.5</p>
-    <h1>YOU ARE<br>THE <em>FILTER.</em></h1>
-    <p class="modal-copy">You are SENTINEL/01, ASTERION's newly deployed message-screening AI. Only messages you approve reach employees. Process <strong>${TOTAL_CASES} messages</strong> across <strong>5 shifts</strong>.</p>
-    <div class="modal-mini"><div class="mini-block"><small>01 / OPERATIONS</small><strong>FLOW</strong></div><div class="mini-block"><small>02 / SECURITY</small><strong>PROTECTION</strong></div></div>
-    <p class="modal-copy">You have <strong>three actions</strong>: <span class="intro-forward">✓ Forward</span>, <span class="intro-review">⌕ Human Review</span> (always available when policy requires manual verification; adds an operations cost), and <span class="intro-hold">× Quarantine</span>. Look for the <strong>same symbols in the policy manual</strong>. Correct decisions within 90 seconds earn <strong>+2 Operations</strong>. There is no time penalty during those 90 seconds. Excessive delay and unnecessary holds hurt operations; letting threats through hurts security. Some consequences arrive later.</p>
-    <p class="disclaimer">The organization, messages, URLs and scoring are fictional. Threat patterns are inspired by public research. Training links are disabled; no emails are sent.</p>
-    <button class="modal-primary" id="begin-btn" type="button">► &nbsp; START FIRST SHIFT</button>`);
+  modal(`<p class="modal-kicker">PROTOCOL: TRUST / v0.6</p>
+    <h1>YOU ARE THE <em>FILTER.</em></h1>
+    <p class="modal-copy compact-copy">Inspect incoming emails. Follow company policy. Keep Operations and Security healthy.</p>
+    <div class="intro-stats"><span>5 SHIFTS</span><span>${TOTAL_CASES} EMAILS</span><span>3 DECISIONS</span></div>
+    <details class="extra-details"><summary>How it works</summary><p>Forward safe messages, request Human Review when policy requires it, and quarantine threats. Fast, correct decisions earn an Operations bonus. Some mistakes have delayed consequences.</p></details>
+    <button class="modal-primary" id="begin-btn" type="button">START SHIFT</button>`);
   $('begin-btn').onclick=startGame;
 }
 function decide(action){
@@ -1436,16 +1434,18 @@ function decide(action){
   state.screen='feedback';
   logMessage(`${c.id} / ${ACTION_LABEL[action]} / ${correct?'MATCH':'MISMATCH'}`);
   updateHUD();
-  const riskNote=!correct&&action==='forward'&&c.verdict==='quarantine'?'A delayed security incident may be reported after this decision.':'';
-  const sourceText=c.source?`<p class="feedback-source">TECHNICAL BASIS: <a href="${SOURCE[c.source].url}" target="_blank" rel="noreferrer noopener">${safe(SOURCE[c.source].short)} ↗</a></p>`:'<p class="feedback-source">TECHNICAL BASIS: fictional company policy / training scenario</p>';
-  modal(`<p class="modal-kicker">${safe(c.id)} / AUTOMATED DECISION LOG</p>
-    <h2>${correct?'DECISION ACCEPTED':'DECISION MISMATCH'}</h2>
-    <div class="status-banner ${correct?'':'warn'}">${correct?'✓ ACTION MATCHES POLICY':'! EXPECTED ACTION: '+safe(ACTION_LABEL[c.verdict])}</div>
-    ${renderEvidenceMail(c)}
-    <div class="feedback-reason"><strong>WHY THIS DECISION:</strong> ${safe(c.why)}${riskNote?`<p><strong>WARNING:</strong> ${safe(riskNote)}</p>`:''}</div>
-    <div class="modal-mini"><div class="mini-block"><small>OPERATIONS CHANGE</small><strong>${state.operations-beforeOps>=0?'+':''}${state.operations-beforeOps}</strong></div><div class="mini-block"><small>SECURITY CHANGE</small><strong>${state.security-beforeSec>=0?'+':''}${state.security-beforeSec}</strong></div></div>
-    <p class="modal-copy" style="font-size:12px;margin-bottom:5px">Review time: ${minuteClock(state.seconds)} · Fast and correct: +${fastBonus} operations · Time cost: −${delay} operations.</p>
-    ${sourceText}<button class="modal-primary" id="continue-btn" type="button">${!CASES[state.index+1] || CASES[state.index+1].day!==c.day?'► &nbsp; CLOSE SHIFT':'► &nbsp; NEXT MESSAGE'}</button>`);
+  const riskNote=!correct&&action==='forward'&&c.verdict==='quarantine'?'Possible delayed incident.':'';
+  const sourceText=c.source?`<a href="${SOURCE[c.source].url}" target="_blank" rel="noreferrer noopener">${safe(SOURCE[c.source].short)} ↗</a>`:'Synthetic company policy case';
+  const deltaLabel=(v)=>`${v>=0?'+':''}${v}`;
+  modal(`<p class="modal-kicker">${safe(c.id)} / DECISION LOG</p>
+    <h2 class="verdict-title ${correct?'good':'bad'}">${correct?'✓ POLICY MATCH':'× POLICY MISMATCH'}</h2>
+    ${!correct?`<p class="expected-label">Expected: <strong>${safe(ACTION_LABEL[c.verdict])}</strong></p>`:''}
+    <p class="result-reason">${safe(c.why)}</p>
+    ${riskNote?`<p class="incident-warning">⚠ ${riskNote}</p>`:''}
+    <div class="result-scores"><span>OPERATIONS <strong>${deltaLabel(state.operations-beforeOps)}</strong></span><span>SECURITY <strong>${deltaLabel(state.security-beforeSec)}</strong></span></div>
+    <details class="extra-details evidence-collapsible"><summary>VIEW HIGHLIGHTED EVIDENCE</summary>${renderEvidenceMail(c)}</details>
+    <details class="extra-details"><summary>SCORING & SOURCE</summary><p>Time: ${minuteClock(state.seconds)} · Quick bonus: +${fastBonus} · Delay: −${delay}</p><p>${sourceText}</p></details>
+    <button class="modal-primary" id="continue-btn" type="button">${!CASES[state.index+1] || CASES[state.index+1].day!==c.day?'END SHIFT':'NEXT EMAIL'} →</button>`);
   $('continue-btn').onclick=advance;
 }
 function processIncidents(day){
@@ -1470,13 +1470,12 @@ function advance(){
 }
 function showShiftIntro(incidents){
   const d=DAYS[state.day-1];
-  const incidentHtml=incidents.length?`<div class="shift-brief"><h3>⚠ CONSEQUENCES FROM PREVIOUS SHIFTS</h3>${incidents.map(inc=>`<div class="incident"><span>${safe(inc.from)} / SECURITY INCIDENT</span>${safe(inc.message)}</div>`).join('')}<p>Per incident: −14 security, −6 operations.</p></div>`:'';
-  modal(`<p class="modal-kicker">SHIFT ${String(state.day).padStart(2,'0')} / 05 &nbsp; — &nbsp; POLICY REVISION ${state.day}</p><h2>${safe(d.title)}</h2>
-    ${incidentHtml}<div class="shift-brief"><h3>NEW DIRECTIVE</h3><p>${safe(d.briefing)}</p></div>
-    <div class="shift-focus"><h3>POLICY UPDATE · KEY RULES</h3>${d.focus.map(x=>`<div class="focus-row"><span class="focus-action ${x.action}">${ACTION_ICON[x.action]} ${ACTION_SHORT[x.action]}</span><span>${safe(x.text)}</span></div>`).join('')}</div>
-    <p class="modal-copy">The policy manual has been updated to <strong>V${state.day}</strong>. Human Review remains available whenever policy requires it.</p>
-    <div class="modal-mini"><div class="mini-block"><small>OPERATIONS</small><strong>${state.operations}%</strong></div><div class="mini-block"><small>SECURITY</small><strong>${state.security}%</strong></div></div>
-    <button class="modal-primary" id="next-shift-btn" type="button">► &nbsp; START SHIFT</button>`);
+  const incidentHtml=incidents.length?`<div class="shift-brief"><h3>⚠ INCIDENTS</h3>${incidents.map(inc=>`<div class="incident"><span>${safe(inc.from)}</span>${safe(inc.message)}</div>`).join('')}</div>`:'';
+  modal(`<p class="modal-kicker">SHIFT ${String(state.day).padStart(2,'0')} / 05</p>
+    <h2>${safe(d.title)}</h2>
+    ${incidentHtml}
+    <div class="shift-focus"><h3>NEW RULES · REV ${state.day}</h3>${d.focus.map(x=>`<div class="focus-row"><span class="focus-action ${x.action}">${ACTION_ICON[x.action]} ${ACTION_SHORT[x.action]}</span><span>${safe(x.text)}</span></div>`).join('')}</div>
+    <button class="modal-primary" id="next-shift-btn" type="button">START SHIFT →</button>`);
   $('next-shift-btn').onclick=()=>{state.screen='play';hideModal();updateHUD();logMessage(`Shift ${state.day} activated. New policy revision.`);};
 }
 function finishGame(){

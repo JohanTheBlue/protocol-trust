@@ -1,6 +1,6 @@
-# PROTOCOL: TRUST — MVP v0.5
+# PROTOCOL: TRUST — MVP v0.6
 
-Standalone offline cyber-awareness decision game.
+Streamlined, offline cyber-awareness decision game.
 
 ## Play
 
@@ -24,3 +24,10 @@ A: Forward; S: Human Review; D: Quarantine; P: Policy; Enter: Continue.
 ## Source / provenance
 
 See `SOURCES.md`. No backend, no tracking, no external network needed to play.
+
+## v0.6 — Quiet Desk
+- Email, policy manual, three decisions and two health indicators remain the primary play surface.
+- Removed redundant labels, agent portrait, always-visible system log and long action instructions.
+- Activity log is expandable; decision evidence and scoring details appear only on demand.
+- Intro and shift notices are concise. The full policy manual and all 35 existing cases are preserved.
+- No live message links, no backend, no analytics; works offline and on GitHub Pages.
