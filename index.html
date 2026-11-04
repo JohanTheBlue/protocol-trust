@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#10151a" />
+  <meta name="description" content="PROTOCOL: TRUST — an offline cyber-awareness decision simulator." />
+  <title>PROTOCOL: TRUST // Sentinel-01</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-lockup">
+        <div class="brand-mark" aria-hidden="true"><span>◇</span></div>
+        <div class="brand-copy"><span class="eyebrow">ASTERION // INTERNAL SYSTEMS</span><strong>PROTOCOL<span class="brand-colon">:</span>TRUST</strong></div>
+      </div>
+      <div class="header-center" aria-label="System status">INBOUND CONTENT VALIDATION <span class="signal-dot"></span> AGENT ACTIVE</div>
+      <button id="sources-button" class="btn header-btn" type="button">SOURCES <span aria-hidden="true">↗</span></button>
+    </header>
+
+    <section class="shift-strip" aria-label="Shift progress">
+      <div class="shift-title"><span class="tiny-label">SHIFT</span> <strong id="day-label">01 / 05</strong></div>
+      <div class="day-track" id="day-track"></div>
+      <div class="shift-right"><span class="tiny-label">PROCESSED</span> <strong id="completed-label">00 / 35</strong></div>
+    </section>
+
+    <main class="workstation">
+      <aside class="policy-panel" id="policy-panel" aria-label="Company policy manual">
+        <div class="folder-tab"><span>01</span> SECURITY DIRECTIVES <span>◆</span></div>
+        <div class="policy-paper">
+          <p class="document-stamp">AST//SEC.04 — CONTROLLED</p>
+          <h2>MESSAGE REVIEW<br>POLICY</h2>
+          <p class="policy-intro">Inbound message screening. Match policy symbols to the three decision buttons.</p>
+          <div class="section-ruler"><span>APPLICATION RULES</span><span>01</span></div>
+          <div class="policy-guide">MATCH TO A DECISION <span class="mini-key forward">✓ FWD</span><span class="mini-key review">⌕ REV</span><span class="mini-key quarantine">× HOLD</span></div>
+          <div id="apps-list" class="app-list"></div>
+          <div class="section-ruler"><span>CURRENT DIRECTIVES</span><span id="directive-version">V1</span></div>
+          <div class="policy-context">The symbols show the action for the stated situation, <strong>not</strong> blanket approval of an app.</div>
+          <div class="rules-list" id="rules-list"></div>
+          <div class="policy-foot"><span>POLICY CONTROL OFFICE</span><span id="policy-version">REV / 01</span></div>
+        </div>
+        <button id="close-policy" class="btn mobile-close" type="button">CLOSE POLICY MANUAL</button>
+      </aside>
+
+      <section class="inbox-column" aria-label="Incoming message">
+        <div class="column-heading"><span>▤ &nbsp; INCOMING QUEUE</span><span id="queue-label">ITEM 001 / 035</span></div>
+        <div class="mail-envelope spotlight-mail">
+          <div class="message-header">
+            <div class="mail-toprow"><span class="live-square"></span><span>INTERCEPTED MESSAGE</span><span class="toprow-right" id="mail-id">REF: -</span></div>
+            <div class="mail-fields">
+              <div class="field-label">FROM</div><div class="field-value" id="mail-from">—</div>
+              <div class="field-label">TO</div><div class="field-value" id="mail-to">—</div>
+              <div class="field-label">SUBJECT</div><div class="field-value subject" id="mail-subject">—</div>
+              <div class="field-label">CHANNEL</div><div class="field-value muted" id="mail-channel">—</div>
+            </div>
+          </div>
+          <div class="paperclip-row" id="attachment-row" hidden></div>
+          <div class="mail-body" id="mail-body" aria-live="polite"></div>
+          <div class="mail-footer"><span>INBOUND // UNTRUSTED // LINKS INACTIVE</span><span id="mail-number">0001</span></div>
+        </div>
+        <div class="desk-bar"><span><i class="desk-led"></i> INSPECTION DESK / 01</span><button class="small-link" id="policy-toggle" type="button">☷ &nbsp; OPEN POLICY MANUAL</button></div>
+        <div class="console-feed" aria-live="polite"><div class="console-label">SYSTEM LOG</div><div id="log-lines" class="log-lines"><div>› Message screening channel initialized.</div></div></div>
+      </section>
+
+      <aside class="console-column" aria-label="Status and decisions">
+        <div class="column-heading"><span>◈ &nbsp; AGENT CONSOLE</span><span>v0.5</span></div>
+        <div class="agent-card"><div class="agent-avatar" aria-hidden="true"><span>◈</span></div><div><span class="small-muted">DECISION ENGINE</span><strong>SENTINEL / 01</strong><span class="status-online"><i></i> OPERATIONAL</span></div></div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-label"><span>01 / OPERATIONS</span><strong id="ops-value">82%</strong></div><div class="meter"><div class="meter-fill ops-fill" id="ops-fill"></div></div><p>Correct quick decisions, processing delays, false positives</p></div>
+          <div class="metric"><div class="metric-label"><span>02 / SECURITY</span><strong id="security-value">82%</strong></div><div class="meter"><div class="meter-fill security-fill" id="security-fill"></div></div><p>Missed threats, delayed security incidents</p></div>
+        </div>
+        <div class="time-box"><div><span class="tiny-label">CURRENT MESSAGE</span><strong id="time-value">00:00</strong></div><div class="time-detail"><span>TIME COST</span><strong id="time-penalty">+2 OPS IF CORRECT</strong></div></div>
+        <div class="decision-panel"><div class="action-title"><span>DECISION PROTOCOL</span><span id="escalations-left">POLICY-BASED ROUTING</span></div>
+        <div class="action-set">
+          <button type="button" class="decision-btn forward" id="action-forward" data-action="forward"><span class="decision-symbol">✓</span><span><strong>FORWARD</strong><small>Deliver message</small></span><kbd>A</kbd></button>
+          <button type="button" class="decision-btn review" id="action-review" data-action="review"><span class="decision-symbol">⌕</span><span><strong>HUMAN REVIEW</strong><small>Manual verification</small></span><kbd>S</kbd></button>
+          <button type="button" class="decision-btn quarantine" id="action-quarantine" data-action="quarantine"><span class="decision-symbol">×</span><span><strong>QUARANTINE</strong><small>Hold message</small></span><kbd>D</kbd></button>
+        </div>
+        <div class="review-explainer">⌕ Human Review is always available when company policy requires it. Manual checks slow operations; fast and correct decisions earn +2 Operations.</div><div class="console-note" id="console-note"><span>!</span> Incorrect policy decisions have consequences. Some incidents may surface later.</div></div>
+      </aside>
+    </main>
+    <footer class="footer"><span>AUTHORIZED FOR TRAINING // SYNTHETIC DATA ONLY</span><span>BUILD 0.5.0 — OFFLINE SIMULATION</span></footer>
+  </div>
+  <div id="modal-root" class="modal-root" aria-live="polite"></div>
+  <script src="game.js"></script>
+</body>
+</html>
