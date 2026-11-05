@@ -1,30 +1,48 @@
-# Evidence and dataset inventory (checked 2026-11-04)
+# Professional basis and provenance — v0.7
 
-1. Volexity, April 22, 2025 — https://www.volexity.com/blog/2025/04/22/phishing-for-codes-russian-threat-actors-target-microsoft-365-oauth-workflows/
-   - Public evidence: screenshot examples of Signal/WhatsApp outreach and an original phishing email, OAuth flow descriptions, sample URLs and detection advice.
-   - Use: story and attack-method reference; *not* a downloadable full raw-email corpus for this operation.
-2. Google Threat Intelligence, August 20, 2026 — https://cloud.google.com/blog/topics/threat-intelligence/distinct-clusters-target-individuals-of-interest-to-russia
-   - Public evidence: UNC7005 technical narrative, WhatsApp device-linking workflow, sample infrastructure and IoC table.
-   - Use: attack mechanic and indicator research. These are different campaign clusters from the Volexity UTA labels.
-3. rf-peixoto/phishing_pot — https://github.com/rf-peixoto/phishing_pot
-   - Public evidence: real honeypot phishing samples in EML form. Different threats; do not claim these are UTA0352/UNC7005 originals.
-4. cw-l/message-corpus — https://github.com/cw-l/message-corpus
-   - Public evidence: redacted EML and messaging samples. Routing headers removed, URLs defanged, spam/scam/phishing not further categorized.
-5. malware-traffic-analysis.net — https://malware-traffic-analysis.net/training-exercises.html
-   - Public evidence: malware traffic/PCAP training material for advanced mode, not an email corpus specifically about the Russian campaign.
+This game **does not** reproduce an actual mail gateway or use real operational data. Its controls are simplified from the following public documentation, and its messages are all fictional reconstructions.
 
-## Handling for the game
-- All 35 MVP emails, sender identities, domain names, policy updates, scoring and incidents are fictional training examples inspired by reported methods.
-- Keep URL/attachments inert inside game and `.example` hostnames; do not import risky samples directly or preserve live links.
-- Pair any future case with a citation, a clear 'original evidence' vs 'reconstructed' label, and a decision rationale.
-- Always inspect licensing and redact PII before importing data.
+## Security-control foundations
 
-6. Microsoft Learn — phishing recognition and Office internet-macro protections:
-   - https://learn.microsoft.com/en-us/windows/security/threat-protection/intelligence/phishing
-   - https://learn.microsoft.com/en-us/microsoft-365-apps/security/internet-macros-blocked
-   - Use: display-name spoofing, password phishing, macro-enabled documents, simulated Office-protection bypass.
-7. FBI IC3 — Business Email Compromise:
-   - https://www.ic3.gov/CrimeInfo/BEC
-   - Use: independently verify requests to modify supplier bank details.
+1. **Email authentication and spoofing:** Microsoft Security Operations guide; SPF, DKIM, DMARC, composite authentication and spoof intelligence. Authentication results are not conclusive evidence of safety by themselves.
+   https://learn.microsoft.com/en-us/defender-office-365/email-auth-sec-ops-guide
+   https://learn.microsoft.com/en-us/defender-office-365/anti-phishing-protection-spoofing-about
+2. **High-confidence phishing and quarantines:** Microsoft Defender for Office 365 mail quarantine policies and verdict-based actions.
+   https://learn.microsoft.com/en-us/defender-office-365/quarantine-policies
+   https://learn.microsoft.com/en-us/defender-office-365/quarantine-about
+3. **URLs:** Microsoft Defender Safe Links. Game's URL result is a simulated input, not a live reputation query.
+   https://learn.microsoft.com/en-us/defender-office-365/safe-links-policies-configure
+4. **Attachments:** Microsoft Defender Safe Attachments and Microsoft 365 Apps internet-macro protections.
+   https://learn.microsoft.com/en-us/defender-office-365/safe-attachments-about
+   https://learn.microsoft.com/en-us/microsoft-365-apps/security/internet-macros-blocked
+5. **App permissions / reviews:** Microsoft Entra admin consent workflow.
+   https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/configure-admin-consent-workflow
+6. **High-risk change verification:** FBI IC3 business-email-compromise awareness.
+   https://www.ic3.gov/CrimeInfo/BEC
 
-All newly added cases are synthetic, not exact messages from these sources.
+## Inspiration for synthetic attack scenarios
+
+- Volexity (2025), *Phishing for Codes* — diplomatic pretexts and OAuth code capture:
+  https://www.volexity.com/blog/2025/04/22/phishing-for-codes-russian-threat-actors-target-microsoft-365-oauth-workflows/
+- Google Threat Intelligence (2026), *Distinct Clusters Target Individuals of Interest to Russia* — WhatsApp account linking and Microsoft device-code tactics:
+  https://cloud.google.com/blog/topics/threat-intelligence/distinct-clusters-target-individuals-of-interest-to-russia
+
+## Optional future training data (not included)
+
+- Phishing Pot: https://github.com/rf-peixoto/phishing_pot
+- Message Corpus: https://github.com/cw-l/message-corpus
+- Malware traffic samples: https://malware-traffic-analysis.net/training-exercises.html
+
+**All 35 emails, addresses, security scan verdicts, rule configurations, approval records and scores are fabricated training data.** They are not captured original emails from the cited threat campaigns. URLs in the messages are `.example` placeholders and intentionally non-clickable. Keep future sample imports defanged, properly licensed and free of personal information.
+
+## Playbook layout reference (v0.9)
+
+- Microsoft, *Incident response playbooks overview*: https://learn.microsoft.com/en-us/security/operations/incident-response-playbooks
+- Microsoft, *Phishing investigation*: https://learn.microsoft.com/en-us/security/operations/incident-response-playbook-phishing
+- Microsoft, *Incident response playbook resources* (workflows/checklists): https://www.microsoft.com/en-us/download/details.aspx?id=103129
+
+The visual playbook is an original simplified UI. The real templates describe incident investigation; the game turns the relevant screening checks into short fictional decision rules.
+
+## Gameplay inspiration
+- Lucas Pope interview: incremental rules and careful scheduling of new mechanics: https://www.gamedeveloper.com/design/designing-the-bleak-genius-of-i-papers-please-i-
+- Serious game design criteria (balance meaningful play and educational goals): https://pmc.ncbi.nlm.nih.gov/articles/PMC7414398/

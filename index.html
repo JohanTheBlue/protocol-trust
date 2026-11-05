@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#10151a" />
-  <meta name="description" content="PROTOCOL: TRUST — an offline cyber-awareness decision simulator." />
-  <title>PROTOCOL: TRUST // Sentinel-01</title>
+  <meta name="description" content="PROTOCOL: TRUST — an offline email screening game." />
+  <title>PROTOCOL: TRUST v0.9.3 // Sentinel-01</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -28,24 +28,26 @@
 
     <main class="workstation">
       <aside class="policy-panel" id="policy-panel" aria-label="Company policy manual">
-        <div class="folder-tab"><span>01</span> SECURITY DIRECTIVES <span>◆</span></div>
-        <div class="policy-paper">
-          <p class="document-stamp">AST//SEC.04 — CONTROLLED</p>
-          <h2>MESSAGE REVIEW<br>POLICY</h2>
-          <p class="policy-intro">Inbound message screening. Match policy symbols to the three decision buttons.</p>
-          <div class="section-ruler"><span>APPLICATION RULES</span><span>01</span></div>
-          <div class="policy-guide">MATCH TO A DECISION <span class="mini-key forward">✓ FWD</span><span class="mini-key review">⌕ REV</span><span class="mini-key quarantine">× HOLD</span></div>
-          <div id="apps-list" class="app-list"></div>
-          <div class="section-ruler"><span>CURRENT DIRECTIVES</span><span id="directive-version">V1</span></div>
-          <div class="policy-context">The symbols show the action for the stated situation, <strong>not</strong> blanket approval of an app.</div>
-          <div class="rules-list" id="rules-list"></div>
-          <div class="policy-foot"><span>POLICY CONTROL OFFICE</span><span id="policy-version">REV / 01</span></div>
+        <button type="button" id="close-policy-top" class="mobile-policy-close">← BACK TO EMAIL</button><div class="folder-tab"><span>01</span> RULEBOOK <span>◆</span></div>
+        <div class="policy-paper" aria-label="Email screening playbook">
+          <div class="playbook-topline"><span>SECURITY DESK</span><span id="policy-version">DAY 1</span></div>
+          <h2>CHOICES</h2>
+          
+          <div class="playbook-legend" aria-label="Action key">
+            <span class="legend-action forward"><b>✓</b> Forward</span>
+            <span class="legend-action review"><b>⌕</b> Review</span>
+            <span class="legend-action quarantine"><b>×</b> Quarantine</span>
+          </div>
+          <div class="playbook-priority" aria-label="Current rules"><span>Current rules:</span></div>
+          <div id="rules-list" class="playbook-list"></div>
+          <div class="playbook-default"><span class="playbook-action forward">✓</span><span><strong>Forward</strong> if no rule matches.</span></div>
+          <span id="directive-version" hidden>DAY 1</span>
         </div>
         <button id="close-policy" class="btn mobile-close" type="button">CLOSE POLICY MANUAL</button>
       </aside>
 
       <section class="inbox-column" aria-label="Incoming message">
-        <div class="column-heading"><span>INBOX</span><span id="queue-label">ITEM 001 / 035</span></div>
+        <div class="column-heading"><span>EMAIL</span><span id="queue-label">ITEM 001 / 035</span></div>
         <div class="mail-envelope spotlight-mail">
           <div class="message-header">
             <div class="mail-toprow"><span class="live-square"></span><span>EMAIL</span><span class="toprow-right" id="mail-id">REF: -</span></div>
@@ -57,14 +59,15 @@
             </div>
           </div>
           <div class="paperclip-row" id="attachment-row" hidden></div>
+          <div class="scan-strip" id="scan-strip" aria-label="Security checks"></div>
           <div class="mail-body" id="mail-body" aria-live="polite"></div>
-          <div class="mail-footer"><span>SIMULATED MESSAGE</span><span id="mail-number">0001</span></div>
+          <span id="mail-number" hidden>0001</span>
         </div>
         <div class="desk-bar"><button class="small-link" id="policy-toggle" type="button">☷ VIEW POLICY</button></div>
       </section>
 
       <aside class="console-column" aria-label="Decision console">
-        <div class="column-heading decision-heading"><span>DECISION</span><span class="clock-readout" title="Time spent on this email">◷ <span id="time-value">00:00</span></span></div>
+        <div class="column-heading decision-heading"><span>YOUR CHOICE</span><span class="clock-readout" title="Time spent on this email">◷ <span id="time-value">00:00</span></span></div>
         <div class="decision-panel">
           <div class="action-set">
             <button type="button" class="decision-btn forward" id="action-forward" data-action="forward"><span class="decision-symbol">✓</span><span><strong>FORWARD</strong></span><kbd>A</kbd></button>
@@ -75,12 +78,12 @@
         <section class="compact-metrics" aria-label="Company health">
           <div class="metric"><div class="metric-label"><span>OPERATIONS</span><strong id="ops-value">82%</strong></div><div class="meter"><div class="meter-fill ops-fill" id="ops-fill"></div></div></div>
           <div class="metric"><div class="metric-label"><span>SECURITY</span><strong id="security-value">82%</strong></div><div class="meter"><div class="meter-fill security-fill" id="security-fill"></div></div></div>
-          <div class="timing-indicator" id="time-penalty" title="Quick correct decisions receive a bonus">+2 OPS IF CORRECT</div>
+          <div class="timing-indicator" id="time-penalty" title="A quick, correct choice improves Operations"></div>
         </section>
-        <details class="activity-drawer"><summary>ACTIVITY LOG</summary><div id="log-lines" class="log-lines">Message screening initialized.</div></details>
+        <details class="activity-drawer"><summary>PAST DECISIONS</summary><div id="log-lines" class="log-lines">Message screening initialized.</div></details>
       </aside>
     </main>
-    <footer class="footer"><span>TRAINING SIMULATION · ALL MESSAGE LINKS INACTIVE</span><span>v0.6</span></footer>
+    <footer class="footer"><span>EMAIL LINKS DISABLED</span><span>v0.9.3</span></footer>
   </div>
   <div id="modal-root" class="modal-root" aria-live="polite"></div>
   <script src="game.js"></script>

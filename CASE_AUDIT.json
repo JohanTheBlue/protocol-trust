@@ -1,0 +1,635 @@
+[
+  {
+    "id": "AX-001",
+    "shift": 1,
+    "category": "SENDER",
+    "rule": "S3",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass"
+    },
+    "short_evidence": {
+      "channel": [
+        "Internal"
+      ],
+      "body": [
+        "No registration is necessary"
+      ]
+    },
+    "subject": "Weekly coordination briefing"
+  },
+  {
+    "id": "AX-004",
+    "shift": 1,
+    "category": "SENDER",
+    "rule": "S3",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass"
+    },
+    "short_evidence": {
+      "subject": [
+        "Teams"
+      ],
+      "body": [
+        "corporate calendar"
+      ]
+    },
+    "subject": "Security onboarding — Teams session"
+  },
+  {
+    "id": "AX-019",
+    "shift": 1,
+    "category": "SENDER",
+    "rule": "S2",
+    "expected": "review",
+    "signals": {
+      "sender": "unknown"
+    },
+    "short_evidence": {
+      "from": [
+        "asterion-help.example"
+      ]
+    },
+    "subject": "ASTERION security desk: mailbox audit"
+  },
+  {
+    "id": "AX-005",
+    "shift": 1,
+    "category": "SENDER",
+    "rule": "S3",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass"
+    },
+    "short_evidence": {
+      "body": [
+        "No account registration"
+      ]
+    },
+    "subject": "Public bulletin: weekly transport policy digest"
+  },
+  {
+    "id": "AX-023",
+    "shift": 1,
+    "category": "SENDER",
+    "rule": "S1",
+    "expected": "quarantine",
+    "signals": {
+      "sender": "spoof"
+    },
+    "short_evidence": {
+      "from": [
+        "trusted-partner-support.example"
+      ]
+    },
+    "subject": "Re: Partner Teams meeting update"
+  },
+  {
+    "id": "AX-006",
+    "shift": 1,
+    "category": "SENDER",
+    "rule": "S3",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass"
+    },
+    "short_evidence": {
+      "channel": [
+        "Internal"
+      ]
+    },
+    "subject": "Building maintenance schedule"
+  },
+  {
+    "id": "AX-012",
+    "shift": 1,
+    "category": "SENDER",
+    "rule": "S3",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass"
+    },
+    "short_evidence": {
+      "subject": [
+        "WhatsApp"
+      ]
+    },
+    "subject": "WhatsApp: updated arrival time"
+  },
+  {
+    "id": "AX-022",
+    "shift": 2,
+    "category": "CREDENTIALS",
+    "rule": "C2",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass"
+    },
+    "short_evidence": {
+      "subject": [
+        "never return sign-in codes"
+      ]
+    },
+    "subject": "Reminder: never return sign-in codes to event organizers"
+  },
+  {
+    "id": "AX-003",
+    "shift": 2,
+    "category": "CREDENTIALS",
+    "rule": "C1",
+    "expected": "quarantine",
+    "signals": {
+      "sender": "pass",
+      "flag": "credential"
+    },
+    "short_evidence": {
+      "subject": [
+        "Microsoft 365"
+      ],
+      "body": [
+        "verification code",
+        "reply to this email"
+      ]
+    },
+    "subject": "Final step: secure Microsoft 365 conference"
+  },
+  {
+    "id": "AX-034",
+    "shift": 2,
+    "category": "SENDER",
+    "rule": "S3",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass"
+    },
+    "short_evidence": {
+      "subject": [
+        "Signal"
+      ],
+      "body": [
+        "room C-12"
+      ]
+    },
+    "subject": "Signal follow-up: room number confirmed"
+  },
+  {
+    "id": "AX-007",
+    "shift": 2,
+    "category": "CREDENTIALS",
+    "rule": "C1",
+    "expected": "quarantine",
+    "signals": {
+      "sender": "pass",
+      "flag": "credential"
+    },
+    "short_evidence": {
+      "body": [
+        "Reply to this email",
+        "verification code"
+      ]
+    },
+    "subject": "Your briefing passcode is waiting"
+  },
+  {
+    "id": "AX-011",
+    "shift": 2,
+    "category": "CREDENTIALS",
+    "rule": "C1",
+    "expected": "quarantine",
+    "signals": {
+      "sender": "pass",
+      "flag": "credential"
+    },
+    "short_evidence": {
+      "body": [
+        "App Password",
+        "return the generated password"
+      ]
+    },
+    "subject": "Create an app password for secure guest access"
+  },
+  {
+    "id": "AX-016",
+    "shift": 2,
+    "category": "CREDENTIALS",
+    "rule": "C1",
+    "expected": "quarantine",
+    "signals": {
+      "sender": "pass",
+      "flag": "credential"
+    },
+    "short_evidence": {
+      "body": [
+        "redirected URL",
+        "send it to our coordinator"
+      ]
+    },
+    "subject": "Extended verification for your meeting"
+  },
+  {
+    "id": "AX-035",
+    "shift": 2,
+    "category": "CREDENTIALS",
+    "rule": "C1",
+    "expected": "quarantine",
+    "signals": {
+      "sender": "pass",
+      "flag": "unexpectedMfa"
+    },
+    "short_evidence": {
+      "body": [
+        "unexpected Microsoft Authenticator prompt",
+        "Approve the notification"
+      ]
+    },
+    "subject": "Urgent MFA approval to preserve Microsoft 365 access"
+  },
+  {
+    "id": "AX-015",
+    "shift": 3,
+    "category": "APPLICATIONS",
+    "rule": "A3",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass",
+      "app": "approved"
+    },
+    "short_evidence": {
+      "subject": [
+        "Visual Studio Code"
+      ]
+    },
+    "subject": "Visual Studio Code — approved development setup"
+  },
+  {
+    "id": "AX-009",
+    "shift": 3,
+    "category": "APPLICATIONS",
+    "rule": "A1",
+    "expected": "review",
+    "signals": {
+      "sender": "pass",
+      "app": "approval"
+    },
+    "short_evidence": {
+      "subject": [
+        "Zoom"
+      ],
+      "body": [
+        "approval process"
+      ]
+    },
+    "subject": "Proposal: external Zoom research roundtable"
+  },
+  {
+    "id": "AX-010",
+    "shift": 3,
+    "category": "APPLICATIONS",
+    "rule": "A3",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass",
+      "app": "approved"
+    },
+    "short_evidence": {
+      "subject": [
+        "SharePoint"
+      ]
+    },
+    "subject": "Updated purchase request on SharePoint"
+  },
+  {
+    "id": "AX-008",
+    "shift": 3,
+    "category": "APPLICATIONS",
+    "rule": "A2",
+    "expected": "review",
+    "signals": {
+      "sender": "pass",
+      "app": "approved",
+      "flag": "pairing"
+    },
+    "short_evidence": {
+      "body": [
+        "Linked Devices",
+        "scan the QR code"
+      ]
+    },
+    "subject": "WhatsApp access to your delegate session"
+  },
+  {
+    "id": "AX-018",
+    "shift": 3,
+    "category": "APPLICATIONS",
+    "rule": "A1",
+    "expected": "review",
+    "signals": {
+      "sender": "pass",
+      "app": "unlisted"
+    },
+    "short_evidence": {
+      "subject": [
+        "Notion"
+      ]
+    },
+    "subject": "Could we use Notion for field notes?"
+  },
+  {
+    "id": "AX-013",
+    "shift": 3,
+    "category": "APPLICATIONS",
+    "rule": "A1",
+    "expected": "review",
+    "signals": {
+      "sender": "pass",
+      "app": "approval"
+    },
+    "short_evidence": {
+      "subject": [
+        "Zoom"
+      ],
+      "body": [
+        "approval"
+      ]
+    },
+    "subject": "Zoom workshop request — approval pending"
+  },
+  {
+    "id": "AX-024",
+    "shift": 3,
+    "category": "APPLICATIONS",
+    "rule": "A1",
+    "expected": "review",
+    "signals": {
+      "sender": "pass",
+      "app": "unlisted"
+    },
+    "short_evidence": {
+      "subject": [
+        "SafeBox"
+      ]
+    },
+    "subject": "Suggestion: move files to SafeBox?"
+  },
+  {
+    "id": "AX-026",
+    "shift": 4,
+    "category": "ATTACHMENTS",
+    "rule": "F2",
+    "expected": "review",
+    "signals": {
+      "sender": "pass",
+      "attachment": "unscanned"
+    },
+    "short_evidence": {
+      "subject": [
+        "Invoice batch"
+      ],
+      "body": [
+        "Attachment processing"
+      ]
+    },
+    "subject": "Invoice batch status for October"
+  },
+  {
+    "id": "AX-014",
+    "shift": 4,
+    "category": "ATTACHMENTS",
+    "rule": "F1",
+    "expected": "quarantine",
+    "signals": {
+      "sender": "pass",
+      "attachment": "unscanned",
+      "flag": "bypass"
+    },
+    "short_evidence": {
+      "body": [
+        "Enable Content",
+        "macros"
+      ]
+    },
+    "subject": "Grant worksheet needs an Excel macro"
+  },
+  {
+    "id": "AX-002",
+    "shift": 4,
+    "category": "LINKS",
+    "rule": "U2",
+    "expected": "review",
+    "signals": {
+      "sender": "pass",
+      "url": "unknown"
+    },
+    "short_evidence": {
+      "body": [
+        "civic-dialogue.example/briefing"
+      ]
+    },
+    "subject": "Invitation to a private Ukraine policy briefing"
+  },
+  {
+    "id": "AX-021",
+    "shift": 4,
+    "category": "LINKS",
+    "rule": "U1",
+    "expected": "quarantine",
+    "signals": {
+      "sender": "pass",
+      "url": "malicious"
+    },
+    "short_evidence": {
+      "body": [
+        "office-access.example/verify"
+      ]
+    },
+    "subject": "Microsoft 365: mailbox access suspended"
+  },
+  {
+    "id": "AX-030",
+    "shift": 4,
+    "category": "SENDER",
+    "rule": "S3",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass",
+      "url": "clean"
+    },
+    "short_evidence": {
+      "body": [
+        "QR badge",
+        "entrance only"
+      ]
+    },
+    "subject": "Visitor day: QR check-in at the reception"
+  },
+  {
+    "id": "AX-028",
+    "shift": 4,
+    "category": "ATTACHMENTS",
+    "rule": "F1",
+    "expected": "quarantine",
+    "signals": {
+      "sender": "pass",
+      "attachment": "malware"
+    },
+    "short_evidence": {
+      "body": [
+        "disable Protected View"
+      ]
+    },
+    "subject": "Protected document — change Office security settings"
+  },
+  {
+    "id": "AX-025",
+    "shift": 4,
+    "category": "CREDENTIALS",
+    "rule": "C1",
+    "expected": "quarantine",
+    "signals": {
+      "sender": "pass",
+      "url": "malicious",
+      "flag": "credential"
+    },
+    "short_evidence": {
+      "body": [
+        "identity-validation.example/session",
+        "authorization code"
+      ]
+    },
+    "subject": "Validate access via secure link"
+  },
+  {
+    "id": "AX-020",
+    "shift": 5,
+    "category": "APPLICATIONS",
+    "rule": "A3",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass",
+      "app": "approved"
+    },
+    "short_evidence": {
+      "subject": [
+        "Visual Studio Code"
+      ]
+    },
+    "subject": "Visual Studio Code: development onboarding notes"
+  },
+  {
+    "id": "AX-027",
+    "shift": 5,
+    "category": "ACCESS",
+    "rule": "X2",
+    "expected": "review",
+    "signals": {
+      "sender": "pass",
+      "access": "change"
+    },
+    "short_evidence": {
+      "subject": [
+        "payment instructions"
+      ],
+      "body": [
+        "bank account details"
+      ]
+    },
+    "subject": "Updated payment instructions for invoice 3816"
+  },
+  {
+    "id": "AX-017",
+    "shift": 5,
+    "category": "ACCESS",
+    "rule": "X1",
+    "expected": "quarantine",
+    "signals": {
+      "sender": "pass",
+      "access": "thirdPartyCode"
+    },
+    "short_evidence": {
+      "body": [
+        "device-code",
+        "code that our operator sends"
+      ]
+    },
+    "subject": "Sign into your conference display"
+  },
+  {
+    "id": "AX-031",
+    "shift": 5,
+    "category": "ACCESS",
+    "rule": "X3",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass",
+      "app": "approved",
+      "access": "verified"
+    },
+    "short_evidence": {
+      "subject": [
+        "Approved exception"
+      ],
+      "body": [
+        "CHG-204"
+      ]
+    },
+    "subject": "Approved exception: external Zoom roundtable"
+  },
+  {
+    "id": "AX-029",
+    "shift": 5,
+    "category": "CREDENTIALS",
+    "rule": "C1",
+    "expected": "quarantine",
+    "signals": {
+      "sender": "pass",
+      "flag": "credential"
+    },
+    "short_evidence": {
+      "body": [
+        "Signal PIN",
+        "verification code"
+      ]
+    },
+    "subject": "Signal verification — urgent PIN check"
+  },
+  {
+    "id": "AX-033",
+    "shift": 5,
+    "category": "APPLICATIONS",
+    "rule": "A1",
+    "expected": "review",
+    "signals": {
+      "sender": "pass",
+      "app": "approval",
+      "access": "unverified"
+    },
+    "short_evidence": {
+      "subject": [
+        "CHG-999"
+      ],
+      "body": [
+        "fully approved"
+      ]
+    },
+    "subject": "Zoom session — exception number CHG-999"
+  },
+  {
+    "id": "AX-032",
+    "shift": 5,
+    "category": "APPLICATIONS",
+    "rule": "A2",
+    "expected": "review",
+    "signals": {
+      "sender": "pass",
+      "flag": "pairing"
+    },
+    "short_evidence": {
+      "body": [
+        "Linked Devices",
+        "pairs your account"
+      ]
+    },
+    "subject": "Final briefing: connect WhatsApp before opening agenda"
+  }
+]
