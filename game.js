@@ -1956,7 +1956,7 @@ function shuffleByShift(cases) {
 }
 let CASES = []; // Fresh, reviewed template variants are generated at game start.
 
-const TOTAL_CASES = CASES.length;
+const TOTAL_CASES = DAYS.length * 12;
 const FAST_THRESHOLD_SECONDS = 90;
 const FAST_CORRECT_BONUS = 2;
 const ACTION_LABEL = { forward:'FORWARD', review:'HUMAN REVIEW', quarantine:'QUARANTINE' };
