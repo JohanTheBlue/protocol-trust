@@ -12,11 +12,12 @@
       "channel": [
         "Internal"
       ],
-      "body": [
-        "No registration is necessary"
+      "subject": [
+        "Weekly coordination briefing"
       ]
     },
-    "subject": "Weekly coordination briefing"
+    "subject": "Weekly coordination briefing",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-004",
@@ -32,10 +33,11 @@
         "Teams"
       ],
       "body": [
-        "corporate calendar"
+        "calendar invite"
       ]
     },
-    "subject": "Security onboarding — Teams session"
+    "subject": "Security onboarding — Teams session",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-019",
@@ -51,7 +53,8 @@
         "asterion-help.example"
       ]
     },
-    "subject": "ASTERION security desk: mailbox audit"
+    "subject": "ASTERION security desk: mailbox audit",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-005",
@@ -63,11 +66,12 @@
       "sender": "pass"
     },
     "short_evidence": {
-      "body": [
-        "No account registration"
+      "subject": [
+        "Public bulletin"
       ]
     },
-    "subject": "Public bulletin: weekly transport policy digest"
+    "subject": "Public bulletin: weekly transport policy digest",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-023",
@@ -83,7 +87,8 @@
         "trusted-partner-support.example"
       ]
     },
-    "subject": "Re: Partner Teams meeting update"
+    "subject": "Re: Partner Teams meeting update",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-006",
@@ -99,7 +104,8 @@
         "Internal"
       ]
     },
-    "subject": "Building maintenance schedule"
+    "subject": "Building maintenance schedule",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-012",
@@ -115,7 +121,93 @@
         "WhatsApp"
       ]
     },
-    "subject": "WhatsApp: updated arrival time"
+    "subject": "WhatsApp: updated arrival time",
+    "origin_type": "constructed_training_case"
+  },
+  {
+    "id": "AX-036",
+    "shift": 1,
+    "category": "SENDER",
+    "rule": "S2",
+    "expected": "review",
+    "signals": {
+      "sender": "unknown"
+    },
+    "short_evidence": {
+      "subject": [
+        "Outstanding invoice"
+      ]
+    },
+    "subject": "Outstanding invoice — payment reminder",
+    "origin_type": "adapted_real_sample"
+  },
+  {
+    "id": "AX-037",
+    "shift": 1,
+    "category": "SENDER",
+    "rule": "S1",
+    "expected": "quarantine",
+    "signals": {
+      "sender": "spoof"
+    },
+    "short_evidence": {
+      "from": [
+        "asterion-service.example"
+      ]
+    },
+    "subject": "Reception access cards",
+    "origin_type": "constructed_training_case"
+  },
+  {
+    "id": "AX-038",
+    "shift": 1,
+    "category": "SENDER",
+    "rule": "S3",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass"
+    },
+    "short_evidence": {
+      "subject": [
+        "Monthly research bulletin"
+      ]
+    },
+    "subject": "Monthly research bulletin",
+    "origin_type": "constructed_training_case"
+  },
+  {
+    "id": "AX-039",
+    "shift": 1,
+    "category": "SENDER",
+    "rule": "S2",
+    "expected": "review",
+    "signals": {
+      "sender": "unknown"
+    },
+    "short_evidence": {
+      "subject": [
+        "New vendor introduction"
+      ]
+    },
+    "subject": "New vendor introduction",
+    "origin_type": "constructed_training_case"
+  },
+  {
+    "id": "AX-040",
+    "shift": 1,
+    "category": "SENDER",
+    "rule": "S3",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass"
+    },
+    "short_evidence": {
+      "subject": [
+        "Visitor badge pickup"
+      ]
+    },
+    "subject": "Visitor badge pickup",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-022",
@@ -127,11 +219,12 @@
       "sender": "pass"
     },
     "short_evidence": {
-      "subject": [
-        "never return sign-in codes"
+      "body": [
+        "MFA prompts"
       ]
     },
-    "subject": "Reminder: never return sign-in codes to event organizers"
+    "subject": "Reminder: never return sign-in codes to event organizers",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-003",
@@ -152,7 +245,8 @@
         "reply to this email"
       ]
     },
-    "subject": "Final step: secure Microsoft 365 conference"
+    "subject": "Final step: secure Microsoft 365 conference",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-034",
@@ -171,7 +265,8 @@
         "room C-12"
       ]
     },
-    "subject": "Signal follow-up: room number confirmed"
+    "subject": "Signal follow-up: room number confirmed",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-007",
@@ -189,7 +284,8 @@
         "verification code"
       ]
     },
-    "subject": "Your briefing passcode is waiting"
+    "subject": "Your briefing passcode is waiting",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-011",
@@ -207,7 +303,8 @@
         "return the generated password"
       ]
     },
-    "subject": "Create an app password for secure guest access"
+    "subject": "Create an app password for secure guest access",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-016",
@@ -225,7 +322,8 @@
         "send it to our coordinator"
       ]
     },
-    "subject": "Extended verification for your meeting"
+    "subject": "Extended verification for your meeting",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-035",
@@ -243,7 +341,95 @@
         "Approve the notification"
       ]
     },
-    "subject": "Urgent MFA approval to preserve Microsoft 365 access"
+    "subject": "Urgent MFA approval to preserve Microsoft 365 access",
+    "origin_type": "constructed_training_case"
+  },
+  {
+    "id": "AX-041",
+    "shift": 2,
+    "category": "CREDENTIALS",
+    "rule": "C1",
+    "expected": "quarantine",
+    "signals": {
+      "sender": "pass",
+      "flag": "credential"
+    },
+    "short_evidence": {
+      "body": [
+        "reply with your current password"
+      ]
+    },
+    "subject": "Security check required",
+    "origin_type": "adapted_real_sample"
+  },
+  {
+    "id": "AX-042",
+    "shift": 2,
+    "category": "CREDENTIALS",
+    "rule": "C1",
+    "expected": "quarantine",
+    "signals": {
+      "sender": "pass",
+      "flag": "credential"
+    },
+    "short_evidence": {
+      "body": [
+        "send the sign-in code"
+      ]
+    },
+    "subject": "Urgent account confirmation",
+    "origin_type": "constructed_training_case"
+  },
+  {
+    "id": "AX-043",
+    "shift": 2,
+    "category": "CREDENTIALS",
+    "rule": "C2",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass"
+    },
+    "short_evidence": {
+      "subject": [
+        "MFA help session"
+      ]
+    },
+    "subject": "MFA help session",
+    "origin_type": "constructed_training_case"
+  },
+  {
+    "id": "AX-044",
+    "shift": 2,
+    "category": "SENDER",
+    "rule": "S2",
+    "expected": "review",
+    "signals": {
+      "sender": "unknown"
+    },
+    "short_evidence": {
+      "from": [
+        "external-events.example"
+      ]
+    },
+    "subject": "Conference registration update",
+    "origin_type": "constructed_training_case"
+  },
+  {
+    "id": "AX-045",
+    "shift": 2,
+    "category": "SENDER",
+    "rule": "S3",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass"
+    },
+    "short_evidence": {
+      "subject": [
+        "Operations report"
+      ]
+    },
+    "subject": "Operations report ready",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-015",
@@ -260,7 +446,8 @@
         "Visual Studio Code"
       ]
     },
-    "subject": "Visual Studio Code — approved development setup"
+    "subject": "Visual Studio Code — approved development setup",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-009",
@@ -275,12 +462,10 @@
     "short_evidence": {
       "subject": [
         "Zoom"
-      ],
-      "body": [
-        "approval process"
       ]
     },
-    "subject": "Proposal: external Zoom research roundtable"
+    "subject": "Proposal: external Zoom research roundtable",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-010",
@@ -297,7 +482,8 @@
         "SharePoint"
       ]
     },
-    "subject": "Updated purchase request on SharePoint"
+    "subject": "Updated purchase request on SharePoint",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-008",
@@ -316,7 +502,8 @@
         "scan the QR code"
       ]
     },
-    "subject": "WhatsApp access to your delegate session"
+    "subject": "WhatsApp access to your delegate session",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-018",
@@ -333,7 +520,8 @@
         "Notion"
       ]
     },
-    "subject": "Could we use Notion for field notes?"
+    "subject": "Could we use Notion for field notes?",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-013",
@@ -348,12 +536,10 @@
     "short_evidence": {
       "subject": [
         "Zoom"
-      ],
-      "body": [
-        "approval"
       ]
     },
-    "subject": "Zoom workshop request — approval pending"
+    "subject": "Zoom workshop request — approval pending",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-024",
@@ -370,7 +556,105 @@
         "SafeBox"
       ]
     },
-    "subject": "Suggestion: move files to SafeBox?"
+    "subject": "Suggestion: move files to SafeBox?",
+    "origin_type": "constructed_training_case"
+  },
+  {
+    "id": "AX-046",
+    "shift": 3,
+    "category": "APPLICATIONS",
+    "rule": "A1",
+    "expected": "review",
+    "signals": {
+      "sender": "pass",
+      "app": "approval"
+    },
+    "short_evidence": {
+      "subject": [
+        "Zoom"
+      ],
+      "body": [
+        "Zoom"
+      ]
+    },
+    "subject": "Zoom meeting invitation",
+    "origin_type": "adapted_real_sample"
+  },
+  {
+    "id": "AX-047",
+    "shift": 3,
+    "category": "APPLICATIONS",
+    "rule": "A1",
+    "expected": "review",
+    "signals": {
+      "sender": "pass",
+      "app": "unlisted"
+    },
+    "short_evidence": {
+      "subject": [
+        "video app"
+      ],
+      "body": [
+        "MeetRoomX"
+      ]
+    },
+    "subject": "Try our new video app",
+    "origin_type": "constructed_training_case"
+  },
+  {
+    "id": "AX-048",
+    "shift": 3,
+    "category": "APPLICATIONS",
+    "rule": "A2",
+    "expected": "review",
+    "signals": {
+      "sender": "pass",
+      "flag": "pairing"
+    },
+    "short_evidence": {
+      "body": [
+        "Linked Devices",
+        "pair your account"
+      ]
+    },
+    "subject": "Chat setup for visiting staff",
+    "origin_type": "constructed_training_case"
+  },
+  {
+    "id": "AX-049",
+    "shift": 3,
+    "category": "APPLICATIONS",
+    "rule": "A3",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass",
+      "app": "approved"
+    },
+    "short_evidence": {
+      "body": [
+        "Visual Studio Code"
+      ]
+    },
+    "subject": "Development workshop — VS Code",
+    "origin_type": "constructed_training_case"
+  },
+  {
+    "id": "AX-050",
+    "shift": 3,
+    "category": "APPLICATIONS",
+    "rule": "A3",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass",
+      "app": "approved"
+    },
+    "short_evidence": {
+      "subject": [
+        "Teams"
+      ]
+    },
+    "subject": "Teams agenda",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-026",
@@ -385,12 +669,10 @@
     "short_evidence": {
       "subject": [
         "Invoice batch"
-      ],
-      "body": [
-        "Attachment processing"
       ]
     },
-    "subject": "Invoice batch status for October"
+    "subject": "Invoice batch status for October",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-014",
@@ -409,7 +691,8 @@
         "macros"
       ]
     },
-    "subject": "Grant worksheet needs an Excel macro"
+    "subject": "Grant worksheet needs an Excel macro",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-002",
@@ -426,7 +709,8 @@
         "civic-dialogue.example/briefing"
       ]
     },
-    "subject": "Invitation to a private Ukraine policy briefing"
+    "subject": "Invitation to a private Ukraine policy briefing",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-021",
@@ -443,7 +727,8 @@
         "office-access.example/verify"
       ]
     },
-    "subject": "Microsoft 365: mailbox access suspended"
+    "subject": "Microsoft 365: mailbox access suspended",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-030",
@@ -456,12 +741,12 @@
       "url": "clean"
     },
     "short_evidence": {
-      "body": [
-        "QR badge",
-        "entrance only"
+      "subject": [
+        "QR check-in"
       ]
     },
-    "subject": "Visitor day: QR check-in at the reception"
+    "subject": "Visitor day: QR check-in at the reception",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-028",
@@ -478,7 +763,8 @@
         "disable Protected View"
       ]
     },
-    "subject": "Protected document — change Office security settings"
+    "subject": "Protected document — change Office security settings",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-025",
@@ -497,7 +783,101 @@
         "authorization code"
       ]
     },
-    "subject": "Validate access via secure link"
+    "subject": "Validate access via secure link",
+    "origin_type": "constructed_training_case"
+  },
+  {
+    "id": "AX-051",
+    "shift": 4,
+    "category": "LINKS",
+    "rule": "U2",
+    "expected": "review",
+    "signals": {
+      "sender": "pass",
+      "url": "unknown"
+    },
+    "short_evidence": {
+      "subject": [
+        "Document signature"
+      ],
+      "body": [
+        "sign-documents.example"
+      ]
+    },
+    "subject": "Document signature requested",
+    "origin_type": "adapted_real_sample"
+  },
+  {
+    "id": "AX-052",
+    "shift": 4,
+    "category": "LINKS",
+    "rule": "U1",
+    "expected": "quarantine",
+    "signals": {
+      "sender": "pass",
+      "url": "malicious"
+    },
+    "short_evidence": {
+      "body": [
+        "QR code"
+      ]
+    },
+    "subject": "Reward code by QR",
+    "origin_type": "adapted_real_sample"
+  },
+  {
+    "id": "AX-053",
+    "shift": 4,
+    "category": "ATTACHMENTS",
+    "rule": "F1",
+    "expected": "quarantine",
+    "signals": {
+      "sender": "pass",
+      "attachment": "malware"
+    },
+    "short_evidence": {
+      "subject": [
+        "spreadsheet"
+      ]
+    },
+    "subject": "Quarterly figures (spreadsheet)",
+    "origin_type": "constructed_training_case"
+  },
+  {
+    "id": "AX-054",
+    "shift": 4,
+    "category": "ATTACHMENTS",
+    "rule": "F2",
+    "expected": "review",
+    "signals": {
+      "sender": "pass",
+      "attachment": "unscanned"
+    },
+    "short_evidence": {
+      "subject": [
+        "Design review draft"
+      ]
+    },
+    "subject": "Design review draft",
+    "origin_type": "constructed_training_case"
+  },
+  {
+    "id": "AX-055",
+    "shift": 4,
+    "category": "SENDER",
+    "rule": "S3",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass",
+      "url": "clean"
+    },
+    "short_evidence": {
+      "subject": [
+        "Published data summary"
+      ]
+    },
+    "subject": "Published data summary",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-020",
@@ -514,7 +894,8 @@
         "Visual Studio Code"
       ]
     },
-    "subject": "Visual Studio Code: development onboarding notes"
+    "subject": "Visual Studio Code: development onboarding notes",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-027",
@@ -534,7 +915,8 @@
         "bank account details"
       ]
     },
-    "subject": "Updated payment instructions for invoice 3816"
+    "subject": "Updated payment instructions for invoice 3816",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-017",
@@ -552,7 +934,8 @@
         "code that our operator sends"
       ]
     },
-    "subject": "Sign into your conference display"
+    "subject": "Sign into your conference display",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-031",
@@ -573,7 +956,8 @@
         "CHG-204"
       ]
     },
-    "subject": "Approved exception: external Zoom roundtable"
+    "subject": "Approved exception: external Zoom roundtable",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-029",
@@ -591,7 +975,8 @@
         "verification code"
       ]
     },
-    "subject": "Signal verification — urgent PIN check"
+    "subject": "Signal verification — urgent PIN check",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-033",
@@ -612,7 +997,8 @@
         "fully approved"
       ]
     },
-    "subject": "Zoom session — exception number CHG-999"
+    "subject": "Zoom session — exception number CHG-999",
+    "origin_type": "constructed_training_case"
   },
   {
     "id": "AX-032",
@@ -630,6 +1016,100 @@
         "pairs your account"
       ]
     },
-    "subject": "Final briefing: connect WhatsApp before opening agenda"
+    "subject": "Final briefing: connect WhatsApp before opening agenda",
+    "origin_type": "constructed_training_case"
+  },
+  {
+    "id": "AX-056",
+    "shift": 5,
+    "category": "CREDENTIALS",
+    "rule": "C1",
+    "expected": "quarantine",
+    "signals": {
+      "sender": "pass",
+      "flag": "credential"
+    },
+    "short_evidence": {
+      "body": [
+        "Send us your current password"
+      ]
+    },
+    "subject": "Emergency security notice",
+    "origin_type": "adapted_real_sample"
+  },
+  {
+    "id": "AX-057",
+    "shift": 5,
+    "category": "ACCESS",
+    "rule": "X1",
+    "expected": "quarantine",
+    "signals": {
+      "sender": "pass",
+      "access": "thirdPartyCode"
+    },
+    "short_evidence": {
+      "body": [
+        "We started a Microsoft sign-in on our device",
+        "device code"
+      ]
+    },
+    "subject": "Remote sign-in help",
+    "origin_type": "constructed_training_case"
+  },
+  {
+    "id": "AX-058",
+    "shift": 5,
+    "category": "ACCESS",
+    "rule": "X2",
+    "expected": "review",
+    "signals": {
+      "sender": "pass",
+      "access": "change"
+    },
+    "short_evidence": {
+      "body": [
+        "CHG-555"
+      ]
+    },
+    "subject": "New shared mailbox permissions",
+    "origin_type": "constructed_training_case"
+  },
+  {
+    "id": "AX-059",
+    "shift": 5,
+    "category": "ACCESS",
+    "rule": "X3",
+    "expected": "forward",
+    "signals": {
+      "sender": "pass",
+      "access": "verified"
+    },
+    "short_evidence": {
+      "body": [
+        "CHG-204",
+        "Zoom",
+        "Research roundtable"
+      ]
+    },
+    "subject": "Zoom approval confirmed: CHG-204",
+    "origin_type": "constructed_training_case"
+  },
+  {
+    "id": "AX-060",
+    "shift": 5,
+    "category": "APPLICATIONS",
+    "rule": "A2",
+    "expected": "review",
+    "signals": {
+      "sender": "pass",
+      "flag": "pairing"
+    },
+    "short_evidence": {
+      "body": [
+        "link your Signal account"
+      ]
+    },
+    "subject": "Linked account for visitor updates",
+    "origin_type": "constructed_training_case"
   }
 ]

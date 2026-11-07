@@ -1,0 +1,6 @@
+# Never publish unreviewed email or attachments
+imports/
+raw_eml/
+*.eml
+__pycache__/
+_build.py

@@ -1,0 +1,548 @@
+[
+  {
+    "id": "AX-001",
+    "day": 1,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "S3"
+  },
+  {
+    "id": "AX-004",
+    "day": 1,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "S3"
+  },
+  {
+    "id": "AX-019",
+    "day": 1,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "research_basis": "microsoftphish",
+    "rule_id": "S2"
+  },
+  {
+    "id": "AX-005",
+    "day": 1,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "S3"
+  },
+  {
+    "id": "AX-023",
+    "day": 1,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "S1"
+  },
+  {
+    "id": "AX-006",
+    "day": 1,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "S3"
+  },
+  {
+    "id": "AX-012",
+    "day": 1,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "S3"
+  },
+  {
+    "id": "AX-036",
+    "day": 1,
+    "origin_type": "adapted_real_sample",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "dataset": "rf-peixoto/phishing_pot",
+    "path": "email/sample-10095.eml",
+    "blob_sha": "49ce9f9971105e8c43666ca8fcd8608987f96ddd",
+    "pattern": "Urgent invoice reminder",
+    "type": "adapted_real_sample",
+    "license": "CC BY-NC 4.0",
+    "source_url": "https://github.com/rf-peixoto/phishing_pot/blob/78be141545ed9e56eefb857808ac78e83eb81b81/email/sample-10095.eml",
+    "note": "The scenario has been rewritten for a fictitious company; its scan results and verdict are game data, not claimed source findings.",
+    "rule_id": "S2"
+  },
+  {
+    "id": "AX-037",
+    "day": 1,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "S1"
+  },
+  {
+    "id": "AX-038",
+    "day": 1,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "S3"
+  },
+  {
+    "id": "AX-039",
+    "day": 1,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "S2"
+  },
+  {
+    "id": "AX-040",
+    "day": 1,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "S3"
+  },
+  {
+    "id": "AX-022",
+    "day": 2,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "research_basis": "volexity",
+    "rule_id": "C2"
+  },
+  {
+    "id": "AX-003",
+    "day": 2,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "research_basis": "volexity",
+    "rule_id": "C1"
+  },
+  {
+    "id": "AX-034",
+    "day": 2,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "S3"
+  },
+  {
+    "id": "AX-007",
+    "day": 2,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "research_basis": "volexity",
+    "rule_id": "C1"
+  },
+  {
+    "id": "AX-011",
+    "day": 2,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "research_basis": "google",
+    "rule_id": "C1"
+  },
+  {
+    "id": "AX-016",
+    "day": 2,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "research_basis": "volexity",
+    "rule_id": "C1"
+  },
+  {
+    "id": "AX-035",
+    "day": 2,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "research_basis": "microsoftphish",
+    "rule_id": "C1"
+  },
+  {
+    "id": "AX-041",
+    "day": 2,
+    "origin_type": "adapted_real_sample",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "dataset": "rf-peixoto/phishing_pot",
+    "path": "email/sample-7253.eml",
+    "blob_sha": "303af22da4dcf173df006589f4f419c8fb9e3813",
+    "pattern": "Account security verification lure",
+    "type": "adapted_real_sample",
+    "license": "CC BY-NC 4.0",
+    "source_url": "https://github.com/rf-peixoto/phishing_pot/blob/78be141545ed9e56eefb857808ac78e83eb81b81/email/sample-7253.eml",
+    "note": "The scenario has been rewritten for a fictitious company; its scan results and verdict are game data, not claimed source findings.",
+    "rule_id": "C1"
+  },
+  {
+    "id": "AX-042",
+    "day": 2,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "C1"
+  },
+  {
+    "id": "AX-043",
+    "day": 2,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "C2"
+  },
+  {
+    "id": "AX-044",
+    "day": 2,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "S2"
+  },
+  {
+    "id": "AX-045",
+    "day": 2,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "S3"
+  },
+  {
+    "id": "AX-015",
+    "day": 3,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "research_basis": "volexity",
+    "rule_id": "A3"
+  },
+  {
+    "id": "AX-009",
+    "day": 3,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "A1"
+  },
+  {
+    "id": "AX-010",
+    "day": 3,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "A3"
+  },
+  {
+    "id": "AX-008",
+    "day": 3,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "research_basis": "google",
+    "rule_id": "A2"
+  },
+  {
+    "id": "AX-018",
+    "day": 3,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "A1"
+  },
+  {
+    "id": "AX-013",
+    "day": 3,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "A1"
+  },
+  {
+    "id": "AX-024",
+    "day": 3,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "A1"
+  },
+  {
+    "id": "AX-046",
+    "day": 3,
+    "origin_type": "adapted_real_sample",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "dataset": "rf-peixoto/phishing_pot",
+    "path": "email/sample-12766.eml",
+    "blob_sha": "6fd8b0c2ef8e5ba7bcb860f8bb7c8868ba6f9aa4",
+    "pattern": "Meeting invitation embedded in suspicious email",
+    "type": "adapted_real_sample",
+    "license": "CC BY-NC 4.0",
+    "source_url": "https://github.com/rf-peixoto/phishing_pot/blob/78be141545ed9e56eefb857808ac78e83eb81b81/email/sample-12766.eml",
+    "note": "The scenario has been rewritten for a fictitious company; its scan results and verdict are game data, not claimed source findings.",
+    "rule_id": "A1"
+  },
+  {
+    "id": "AX-047",
+    "day": 3,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "A1"
+  },
+  {
+    "id": "AX-048",
+    "day": 3,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "A2"
+  },
+  {
+    "id": "AX-049",
+    "day": 3,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "A3"
+  },
+  {
+    "id": "AX-050",
+    "day": 3,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "A3"
+  },
+  {
+    "id": "AX-026",
+    "day": 4,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "F2"
+  },
+  {
+    "id": "AX-014",
+    "day": 4,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "research_basis": "microsoftmacro",
+    "rule_id": "F1"
+  },
+  {
+    "id": "AX-002",
+    "day": 4,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "research_basis": "volexity",
+    "rule_id": "U2"
+  },
+  {
+    "id": "AX-021",
+    "day": 4,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "research_basis": "microsoftphish",
+    "rule_id": "U1"
+  },
+  {
+    "id": "AX-030",
+    "day": 4,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "research_basis": "google",
+    "rule_id": "S3"
+  },
+  {
+    "id": "AX-028",
+    "day": 4,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "research_basis": "microsoftmacro",
+    "rule_id": "F1"
+  },
+  {
+    "id": "AX-025",
+    "day": 4,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "research_basis": "volexity",
+    "rule_id": "C1"
+  },
+  {
+    "id": "AX-051",
+    "day": 4,
+    "origin_type": "adapted_real_sample",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "dataset": "rf-peixoto/phishing_pot",
+    "path": "email/sample-4642.eml",
+    "blob_sha": "0649842ab846382db5357fea4b99d9d4c09dbb37",
+    "pattern": "Document-signing/invoice lure",
+    "type": "adapted_real_sample",
+    "license": "CC BY-NC 4.0",
+    "source_url": "https://github.com/rf-peixoto/phishing_pot/blob/78be141545ed9e56eefb857808ac78e83eb81b81/email/sample-4642.eml",
+    "note": "The scenario has been rewritten for a fictitious company; its scan results and verdict are game data, not claimed source findings.",
+    "rule_id": "U2"
+  },
+  {
+    "id": "AX-052",
+    "day": 4,
+    "origin_type": "adapted_real_sample",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "dataset": "rf-peixoto/phishing_pot",
+    "path": "email/sample-6662.eml",
+    "blob_sha": "4e0a96ff0403f05868674f8835dfad39e6d195cb",
+    "pattern": "QR-code reward lure",
+    "type": "adapted_real_sample",
+    "license": "CC BY-NC 4.0",
+    "source_url": "https://github.com/rf-peixoto/phishing_pot/blob/78be141545ed9e56eefb857808ac78e83eb81b81/email/sample-6662.eml",
+    "note": "The scenario has been rewritten for a fictitious company; its scan results and verdict are game data, not claimed source findings.",
+    "rule_id": "U1"
+  },
+  {
+    "id": "AX-053",
+    "day": 4,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "F1"
+  },
+  {
+    "id": "AX-054",
+    "day": 4,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "F2"
+  },
+  {
+    "id": "AX-055",
+    "day": 4,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "S3"
+  },
+  {
+    "id": "AX-020",
+    "day": 5,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "A3"
+  },
+  {
+    "id": "AX-027",
+    "day": 5,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "research_basis": "ic3",
+    "rule_id": "X2"
+  },
+  {
+    "id": "AX-017",
+    "day": 5,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "research_basis": "microsoft",
+    "rule_id": "X1"
+  },
+  {
+    "id": "AX-031",
+    "day": 5,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "X3"
+  },
+  {
+    "id": "AX-029",
+    "day": 5,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "C1"
+  },
+  {
+    "id": "AX-033",
+    "day": 5,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "A1"
+  },
+  {
+    "id": "AX-032",
+    "day": 5,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "research_basis": "google",
+    "rule_id": "A2"
+  },
+  {
+    "id": "AX-056",
+    "day": 5,
+    "origin_type": "adapted_real_sample",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "dataset": "rf-peixoto/phishing_pot",
+    "path": "email/sample-6898.eml",
+    "blob_sha": "1f7203e76314460a4ce5919487e33b112c2bbe5a",
+    "pattern": "Urgent account-recovery lure",
+    "type": "adapted_real_sample",
+    "license": "CC BY-NC 4.0",
+    "source_url": "https://github.com/rf-peixoto/phishing_pot/blob/78be141545ed9e56eefb857808ac78e83eb81b81/email/sample-6898.eml",
+    "note": "The scenario has been rewritten for a fictitious company; its scan results and verdict are game data, not claimed source findings.",
+    "rule_id": "C1"
+  },
+  {
+    "id": "AX-057",
+    "day": 5,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "X1"
+  },
+  {
+    "id": "AX-058",
+    "day": 5,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "X2"
+  },
+  {
+    "id": "AX-059",
+    "day": 5,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "X3"
+  },
+  {
+    "id": "AX-060",
+    "day": 5,
+    "origin_type": "constructed_training_case",
+    "displayed_text": "rewritten_safe_text",
+    "verdict_checked_against": "game_policy",
+    "rule_id": "A2"
+  }
+]

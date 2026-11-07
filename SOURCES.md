@@ -1,48 +1,28 @@
-# Professional basis and provenance — v0.7
+# Sources and provenance
 
-This game **does not** reproduce an actual mail gateway or use real operational data. Its controls are simplified from the following public documentation, and its messages are all fictional reconstructions.
+## Research background
+- Volexity, *Phishing for Codes* (2025): https://www.volexity.com/blog/2025/04/22/phishing-for-codes-russian-threat-actors-target-microsoft-365-oauth-workflows/
+- Google Threat Intelligence, *Distinct Clusters Target Individuals of Interest to Russia* (2026): https://cloud.google.com/blog/topics/threat-intelligence/distinct-clusters-target-individuals-of-interest-to-russia
+- Microsoft Learn: email authentication, Safe Links, Safe Attachments, quarantine, Entra app consent (see `SOURCE` in `game.js`).
 
-## Security-control foundations
+## Samples now used
 
-1. **Email authentication and spoofing:** Microsoft Security Operations guide; SPF, DKIM, DMARC, composite authentication and spoof intelligence. Authentication results are not conclusive evidence of safety by themselves.
-   https://learn.microsoft.com/en-us/defender-office-365/email-auth-sec-ops-guide
-   https://learn.microsoft.com/en-us/defender-office-365/anti-phishing-protection-spoofing-about
-2. **High-confidence phishing and quarantines:** Microsoft Defender for Office 365 mail quarantine policies and verdict-based actions.
-   https://learn.microsoft.com/en-us/defender-office-365/quarantine-policies
-   https://learn.microsoft.com/en-us/defender-office-365/quarantine-about
-3. **URLs:** Microsoft Defender Safe Links. Game's URL result is a simulated input, not a live reputation query.
-   https://learn.microsoft.com/en-us/defender-office-365/safe-links-policies-configure
-4. **Attachments:** Microsoft Defender Safe Attachments and Microsoft 365 Apps internet-macro protections.
-   https://learn.microsoft.com/en-us/defender-office-365/safe-attachments-about
-   https://learn.microsoft.com/en-us/microsoft-365-apps/security/internet-macros-blocked
-5. **App permissions / reviews:** Microsoft Entra admin consent workflow.
-   https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/configure-admin-consent-workflow
-6. **High-risk change verification:** FBI IC3 business-email-compromise awareness.
-   https://www.ic3.gov/CrimeInfo/BEC
+Six *adaptations*, not verbatim email copies, were based on identifiable Phishing Pot `.eml` samples. Links below identify the originals; actual email contents, PII, live URLs and attachments are **not bundled**.
 
-## Inspiration for synthetic attack scenarios
+| Game ID | Upstream source | Adaptation |
+|---|---|---|
+| AX-036 | [sample-10095.eml](https://github.com/rf-peixoto/phishing_pot/blob/78be141545ed9e56eefb857808ac78e83eb81b81/email/sample-10095.eml) | Urgent invoice reminder |
+| AX-041 | [sample-7253.eml](https://github.com/rf-peixoto/phishing_pot/blob/78be141545ed9e56eefb857808ac78e83eb81b81/email/sample-7253.eml) | Verification / password request |
+| AX-046 | [sample-12766.eml](https://github.com/rf-peixoto/phishing_pot/blob/78be141545ed9e56eefb857808ac78e83eb81b81/email/sample-12766.eml) | Zoom invitation / app approval |
+| AX-051 | [sample-4642.eml](https://github.com/rf-peixoto/phishing_pot/blob/78be141545ed9e56eefb857808ac78e83eb81b81/email/sample-4642.eml) | Invoice document-signing lure |
+| AX-052 | [sample-6662.eml](https://github.com/rf-peixoto/phishing_pot/blob/78be141545ed9e56eefb857808ac78e83eb81b81/email/sample-6662.eml) | QR-based reward lure |
+| AX-056 | [sample-6898.eml](https://github.com/rf-peixoto/phishing_pot/blob/78be141545ed9e56eefb857808ac78e83eb81b81/email/sample-6898.eml) | Urgent account verification |
 
-- Volexity (2025), *Phishing for Codes* — diplomatic pretexts and OAuth code capture:
-  https://www.volexity.com/blog/2025/04/22/phishing-for-codes-russian-threat-actors-target-microsoft-365-oauth-workflows/
-- Google Threat Intelligence (2026), *Distinct Clusters Target Individuals of Interest to Russia* — WhatsApp account linking and Microsoft device-code tactics:
-  https://cloud.google.com/blog/topics/threat-intelligence/distinct-clusters-target-individuals-of-interest-to-russia
+Source: [rf-peixoto/phishing_pot](https://github.com/rf-peixoto/phishing_pot), licensed CC BY-NC 4.0. Original blob SHA and original-vs-fictional status are tracked in `CASE_SOURCES.json`.
 
-## Optional future training data (not included)
+For an alternative already-redacted corpus, see [cw-l/message-corpus](https://github.com/cw-l/message-corpus), with redacted emails and defanged URLs. Those samples are **not yet incorporated**.
 
-- Phishing Pot: https://github.com/rf-peixoto/phishing_pot
-- Message Corpus: https://github.com/cw-l/message-corpus
-- Malware traffic samples: https://malware-traffic-analysis.net/training-exercises.html
+The 35 carried-over cases sometimes link to a research report as a **technique reference**, not as evidence that an actual published email was copied. All scan results and case verdicts in the game are fictional, manually defined training data.
 
-**All 35 emails, addresses, security scan verdicts, rule configurations, approval records and scores are fabricated training data.** They are not captured original emails from the cited threat campaigns. URLs in the messages are `.example` placeholders and intentionally non-clickable. Keep future sample imports defanged, properly licensed and free of personal information.
-
-## Playbook layout reference (v0.9)
-
-- Microsoft, *Incident response playbooks overview*: https://learn.microsoft.com/en-us/security/operations/incident-response-playbooks
-- Microsoft, *Phishing investigation*: https://learn.microsoft.com/en-us/security/operations/incident-response-playbook-phishing
-- Microsoft, *Incident response playbook resources* (workflows/checklists): https://www.microsoft.com/en-us/download/details.aspx?id=103129
-
-The visual playbook is an original simplified UI. The real templates describe incident investigation; the game turns the relevant screening checks into short fictional decision rules.
-
-## Gameplay inspiration
-- Lucas Pope interview: incremental rules and careful scheduling of new mechanics: https://www.gamedeveloper.com/design/designing-the-bleak-genius-of-i-papers-please-i-
-- Serious game design criteria (balance meaningful play and educational goals): https://pmc.ncbi.nlm.nih.gov/articles/PMC7414398/
+## Procedural examples (v0.12)
+The 18 scenario templates in `game.js` are original, fictional messages. Sender-check outcomes and scanner outcomes are randomly combined with reviewed message variants. They are not derived from raw .eml samples. Only base cases marked with an `.eml` origin have Phishing Pot provenance. A “No alert” scan is not proof of safety.

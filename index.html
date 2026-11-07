@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#10151a" />
   <meta name="description" content="PROTOCOL: TRUST — an offline email screening game." />
-  <title>PROTOCOL: TRUST v0.9.3 // Sentinel-01</title>
+  <title>PROTOCOL: TRUST v0.12 // Sentinel-01</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -23,7 +23,7 @@
     <section class="shift-strip" aria-label="Shift progress">
       <div class="shift-title"><span class="tiny-label">SHIFT</span> <strong id="day-label">01 / 05</strong></div>
       <div class="day-track" id="day-track"></div>
-      <div class="shift-right"><span class="tiny-label">DONE</span> <strong id="completed-label">00 / 35</strong></div>
+      <div class="shift-right"><span class="tiny-label">DONE</span> <strong id="completed-label">00 / 60</strong></div>
     </section>
 
     <main class="workstation">
@@ -76,14 +76,14 @@
           </div>
         </div>
         <section class="compact-metrics" aria-label="Company health">
-          <div class="metric"><div class="metric-label"><span>OPERATIONS</span><strong id="ops-value">82%</strong></div><div class="meter"><div class="meter-fill ops-fill" id="ops-fill"></div></div></div>
-          <div class="metric"><div class="metric-label"><span>SECURITY</span><strong id="security-value">82%</strong></div><div class="meter"><div class="meter-fill security-fill" id="security-fill"></div></div></div>
+          <div class="metric" id="ops-metric"><div class="metric-label"><span>OPERATIONS</span><strong id="ops-value">82%</strong></div><div class="meter"><div class="meter-fill ops-fill" id="ops-fill"></div></div></div>
+          <div class="metric" id="security-metric"><div class="metric-label"><span>SECURITY</span><strong id="security-value">82%</strong></div><div class="meter"><div class="meter-fill security-fill" id="security-fill"></div></div></div>
           <div class="timing-indicator" id="time-penalty" title="A quick, correct choice improves Operations"></div>
         </section>
         <details class="activity-drawer"><summary>PAST DECISIONS</summary><div id="log-lines" class="log-lines">Message screening initialized.</div></details>
       </aside>
     </main>
-    <footer class="footer"><span>EMAIL LINKS DISABLED</span><span>v0.9.3</span></footer>
+    <footer class="footer"><span>EMAIL LINKS DISABLED</span><span>v0.12</span></footer>
   </div>
   <div id="modal-root" class="modal-root" aria-live="polite"></div>
   <script src="game.js"></script>
