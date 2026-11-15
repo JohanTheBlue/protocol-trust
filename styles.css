@@ -216,3 +216,18 @@
 .linkcheck-result.unknown{border-color:#cfb27d;background:#302d25}
 .linkcheck-result.threat{border-color:#d78984;background:#352727}
 @media(max-width:760px){.desk-bar{padding:12px 0 0;gap:16px}.desk-bar .small-link{font-size:11px}.linkcheck-domain{font-size:11px}}
+
+/* v0.18: clear, restrained first-run choices and no-score tutorial */
+.mode-actions{display:grid;grid-template-columns:1fr;gap:10px;margin-top:16px}
+.mode-actions .modal-primary,.mode-actions .modal-secondary{width:100%;margin:0;padding:14px 12px;min-height:48px}
+.mode-hint{font-size:12px;color:#a9b2ad;line-height:1.5;margin:12px 0 0}
+.practice-message{background:#e7e4d7;color:#283034;border-left:4px solid #a88b5e;padding:15px 16px;line-height:1.55;margin:14px 0;border-radius:2px}
+.practice-message strong{font:700 13px var(--mono)}
+.practice-message p{margin:10px 0 0;font-size:15px}
+.practice-actions{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.practice-action{flex:1 1 125px;padding:12px 8px;background:#2b3b43;color:#e6e5d9;border:1px solid #69757a;font:700 13px var(--mono);cursor:pointer}
+.practice-action:focus-visible,.practice-action:hover{border-color:var(--amber)}
+.practice-result{font-size:14px;line-height:1.45;padding:10px 12px;background:#293a36;color:#cde5d9}
+.practice-result.error{background:#493334;color:#f3d4d0}
+.practice-skip{display:block;background:none;border:0;padding:12px 0 0;font:12px var(--mono);color:#c4c6bc;text-decoration:underline;cursor:pointer;margin:auto}
+@media(max-width:420px){.practice-actions{display:grid;grid-template-columns:1fr;gap:7px}}

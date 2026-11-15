@@ -1,0 +1,86 @@
+[
+  {
+    "strategy": "demo:perfect-fast",
+    "avgOps": 83,
+    "avgSec": 85.1,
+    "goalRate": "100%",
+    "accuracy": "100%"
+  },
+  {
+    "strategy": "demo:perfect-medium",
+    "avgOps": 79,
+    "avgSec": 85.1,
+    "goalRate": "100%",
+    "accuracy": "100%"
+  },
+  {
+    "strategy": "demo:all-forward",
+    "avgOps": 90.1,
+    "avgSec": 17.1,
+    "goalRate": "0%",
+    "accuracy": "41%"
+  },
+  {
+    "strategy": "demo:all-review",
+    "avgOps": 57.9,
+    "avgSec": 81.8,
+    "goalRate": "0%",
+    "accuracy": "32%"
+  },
+  {
+    "strategy": "demo:all-quarantine",
+    "avgOps": 42.1,
+    "avgSec": 81.3,
+    "goalRate": "0%",
+    "accuracy": "27%"
+  },
+  {
+    "strategy": "demo:sloppy",
+    "avgOps": 80.2,
+    "avgSec": 82,
+    "goalRate": "94%",
+    "accuracy": "92%"
+  },
+  {
+    "strategy": "full:perfect-fast",
+    "avgOps": 99.6,
+    "avgSec": 100,
+    "goalRate": "100%",
+    "accuracy": "100%"
+  },
+  {
+    "strategy": "full:perfect-medium",
+    "avgOps": 90.4,
+    "avgSec": 100,
+    "goalRate": "100%",
+    "accuracy": "100%"
+  },
+  {
+    "strategy": "full:all-forward",
+    "avgOps": 100,
+    "avgSec": 0,
+    "goalRate": "0%",
+    "accuracy": "44%"
+  },
+  {
+    "strategy": "full:all-review",
+    "avgOps": 0,
+    "avgSec": 98.9,
+    "goalRate": "0%",
+    "accuracy": "30%"
+  },
+  {
+    "strategy": "full:all-quarantine",
+    "avgOps": 0,
+    "avgSec": 97.2,
+    "goalRate": "0%",
+    "accuracy": "25%"
+  },
+  {
+    "strategy": "full:sloppy",
+    "avgOps": 93.9,
+    "avgSec": 94.6,
+    "goalRate": "98%",
+    "accuracy": "92%"
+  }
+]

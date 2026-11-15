@@ -1,4 +1,4 @@
-/* PROTOCOL: TRUST v0.16.1 — neutral script highlights, lean app list, directional score cues. */
+/* PROTOCOL: TRUST v0.18 — alpha demo, practice, and consistent link checks. */
 'use strict';
 
 const SOURCE = Object.freeze({
@@ -1956,7 +1956,8 @@ function shuffleByShift(cases) {
 }
 let CASES = []; // Fresh, reviewed template variants are generated at game start.
 
-const TOTAL_CASES = DAYS.length * 12;
+let TOTAL_CASES = DAYS.length * 12;
+const DEMO_COUNTS = [3,2,3,2,2];
 const FAST_THRESHOLD_SECONDS = 90;
 const FAST_CORRECT_BONUS = 1;
 const GOAL_SCORE = 70;
@@ -1970,7 +1971,7 @@ const safe = (s) => String(s ?? '').replace(/[&<>"']/g, (c)=>({'&':'&amp;','<':'
 const state = {
   screen:'intro', day:1, index:0, operations:82, security:82,
   seconds:0, chosen:null, detailedFeedback:false, completed:[], pending:[], incidents:[],
-  log:['› Message screening channel initialized.'], formerScreen:null, scripts:[], nextSecurityAlerts:[], appPolicy:{zoom:false,notion:false,safebox:false},shiftOpeningOps:82,shiftOpeningSec:82
+  log:['› Message screening channel initialized.'], mode:'demo', formerScreen:null, scripts:[], nextSecurityAlerts:[], appPolicy:{zoom:false,notion:false,safebox:false},shiftOpeningOps:82,shiftOpeningSec:82
 };
 
 const SCRIPT_OPTIONS = [
@@ -2082,9 +2083,9 @@ function logMessage(message){
   $('log-lines').innerHTML=state.log.map(x=>`<div>${safe(x)}</div>`).join('');
 }
 function minuteClock(seconds){return `${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;}
-// Time is guidance, not a reflex test. Allow three minutes per email before a small cost.
-function waitCost(){return state.seconds<=180?0:Math.min(2,Math.ceil((state.seconds-180)/180));}
-function speedStatus(){return state.seconds<=FAST_THRESHOLD_SECONDS?'':`Time penalty: −${waitCost()} Ops`;}
+// Time is guidance, not a reflex test. Only unusually long inspections cost Ops.
+function waitCost(){return state.seconds<=300?0:1;}
+function speedStatus(){return waitCost()?`Long inspection: −${waitCost()} Ops`:"";}
 function updateHUD(){
   $('day-label').textContent=`${String(state.day).padStart(2,'0')} / 05`;
   $('completed-label').textContent=`${String(state.completed.length).padStart(2,'0')} / ${TOTAL_CASES}`;
@@ -2969,6 +2970,8 @@ function buildShiftDeck(){
       else statusBySender.set(email,c.signals.sender);
     }
     applyAppPolicy(c); // Re-evaluate after a sender status becomes confirmed.
+    // Do not keep an invisible link verdict. Only visible URLs are scannable.
+    if(!linkDomains(c.subject+' '+c.body).length)delete c.signals.url;
     const verdict=expectedVerdict(c);
     c.verdict=verdict.action;c.ruleId=verdict.rule;
   }
@@ -2977,6 +2980,37 @@ function buildShiftDeck(){
     result.push(...paceShift(deck.filter(c=>c.day===day)));
   }
   return result;
+}
+function buildDemoDeck(fullDeck){
+  const picks=[];
+  for(let day=1;day<=DAYS.length;day++){
+    const pool=fullDeck.filter(c=>c.day===day);
+    const count=DEMO_COUNTS[day-1];
+    const picked=[];
+    const take=(predicate)=>{
+      const options=pool.filter(c=>!picked.includes(c) && predicate(c));
+      if(options.length)picked.push(pick(options));
+    };
+    if(day===1){
+      take(c=>c.verdict==='forward');take(c=>c.verdict==='review');take(c=>c.verdict==='quarantine');
+    }else if(day===2){
+      take(c=>c.verdict==='forward');take(c=>c.verdict==='quarantine');
+    }else if(day===3){
+      take(c=>c.signals.app && c.verdict==='review');
+      take(c=>c.verdict==='forward');
+      take(c=>c.verdict==='quarantine');
+    }else if(day===4){
+      take(c=>linkDomains(c.subject+' '+c.body).length>0);
+      take(c=>!!c.signals.attachment && linkDomains(c.subject+' '+c.body).length===0);
+    }else if(day===5){
+      take(c=>!!c.signals.access);
+      take(c=>c.verdict!==picked[0]?.verdict);
+    }
+    for(const c of randomize(pool))if(picked.length<count && !picked.includes(c))picked.push(c);
+    if(picked.length!==count)throw Error('Not enough cases for quick demo');
+    picks.push(...paceShift(picked));
+  }
+  return picks;
 }
 CASES = buildShiftDeck();
 
@@ -3059,24 +3093,48 @@ function modal(markup){
   $('modal-root').classList.add('visible');
 }
 function hideModal(){ $('modal-root').classList.remove('visible'); $('modal-root').innerHTML=''; }
-function startGame(){
+function startGame(mode='demo'){
   clearResultTimers();
   state.appPolicy=chooseAppPolicy();
-  CASES = buildShiftDeck();
-  Object.assign(state,{screen:'play',day:1,index:0,operations:82,security:82,seconds:0,chosen:null,completed:[],pending:[],incidents:[],log:[],scripts:[],nextSecurityAlerts:[],shiftOpeningOps:82,shiftOpeningSec:82});
-  hideModal();renderCase();logMessage('Shift 1 started. The message gateway is active.');
+  TOTAL_CASES=DAYS.length*12;
+  const fullDeck=buildShiftDeck();
+  state.mode=mode;
+  CASES=mode==='demo'?buildDemoDeck(fullDeck):fullDeck;
+  TOTAL_CASES=CASES.length;
+  const initial=mode==='demo'?78:82;
+  Object.assign(state,{screen:'play',day:1,index:0,operations:initial,security:initial,seconds:0,chosen:null,completed:[],pending:[],incidents:[],log:[],scripts:[],nextSecurityAlerts:[],shiftOpeningOps:initial,shiftOpeningSec:initial});
+  hideModal();renderCase();logMessage('Shift 1 started.');
+}
+// Three no-score examples teach the three actions without revealing real cases.
+const PRACTICE = [
+  {sender:'Trusted',subject:'Meeting room update',body:'The team meeting has moved to Room B.',answer:'forward',why:'Trusted sender; no rule is triggered.'},
+  {sender:'Not confirmed',subject:'New visitor details',body:'Could you confirm the visitor arrival time?',answer:'review',why:'The sender is not confirmed. Ask for a human check.'},
+  {sender:'Untrusted',subject:'Office delivery',body:'Your delivery is ready for collection.',answer:'quarantine',why:'An untrusted sender is blocked, even if the message sounds routine.'}
+];
+function practiceStep(step=0,choice=null){
+  state.screen='tutorial';updateHUD();
+  const t=PRACTICE[step],done=choice!==null;
+  modal(`<p class="modal-kicker">PRACTICE ${step+1} / 3 · NO SCORE</p>
+    <h2>${safe(t.subject)}</h2>
+    <div class="practice-message"><strong>Sender: ${safe(t.sender)}</strong><p>${safe(t.body)}</p></div>
+    ${done?`<p class="practice-result ${choice===t.answer?'success':'error'}">${choice===t.answer?'✓ Correct':'Try again next time'} · ${safe(t.why)}</p><button class="modal-primary" id="practice-next" type="button">${step===2?'START DEMO':'NEXT'} →</button>`:
+    `<div class="practice-actions">${['forward','review','quarantine'].map(a=>`<button type="button" class="practice-action" data-practice="${a}">${safe(ACTION_LABEL[a])}</button>`).join('')}</div>`}
+    <button class="practice-skip" id="practice-skip" type="button">SKIP PRACTICE</button>`);
+  $('practice-skip').onclick=()=>startGame('demo');
+  if(done)$('practice-next').onclick=()=>step===2?startGame('demo'):practiceStep(step+1);
+  else document.querySelectorAll('[data-practice]').forEach(b=>b.onclick=()=>practiceStep(step,b.dataset.practice));
 }
 function openIntro(){
   state.screen='intro';renderCase();updateHUD();
   modal(`<p class="modal-kicker">PROTOCOL: TRUST</p>
     <h1>YOU ARE THE <em>AI.</em></h1>
-    <p class="modal-copy compact-copy">Read each email. Use the rulebook. Pick Forward, Review, or Quarantine.</p>
-    <p class="modal-copy compact-copy">3 quick, correct choices in a row = +1 Operations.</p>
-    
+    <p class="modal-copy compact-copy">Check emails. Follow the rules. Keep Operations and Security above 70%.</p>
     ${feedbackOption()}
-    <button class="modal-primary" id="begin-btn" type="button">START GAME</button>`);
+    <div class="mode-actions"><button class="modal-primary" id="begin-demo" type="button">QUICK DEMO · 12 EMAILS</button><button class="modal-secondary" id="begin-full" type="button">FULL GAME · 60 EMAILS</button></div>
+    <p class="mode-hint">The quick demo starts with 3 practice emails. Practice doesn't affect your score.</p>`);
   bindFeedbackOption();
-  $('begin-btn').onclick=startGame;
+  $('begin-demo').onclick=()=>practiceStep();
+  $('begin-full').onclick=()=>startGame('full');
 }
 function decide(action){
   if(state.screen!=='play')return;
@@ -3191,7 +3249,7 @@ function showShiftIntro(incidents,completedDay=state.day-1){
   const pickScript=[3,5].includes(state.day);
   const availableScripts=SCRIPT_OPTIONS.filter(x=>!scriptAvailable(x.id));
   const upgrades=pickScript?`<div class="upgrade-panel"><h3>CHOOSE A SCRIPT</h3><div class="upgrade-options">${availableScripts.map(x=>`<button class="upgrade-btn" type="button" data-upgrade="${x.id}" aria-pressed="false"><strong>${x.name}</strong><small>${x.description}</small></button>`).join('')}</div><p id="upgrade-selection" class="upgrade-selection">Choose one. You can change it before starting.</p></div>`:'';
-  modal(`<p class="modal-kicker">SHIFT ${state.day} / 5</p>
+  modal(`<p class="modal-kicker">${state.mode==='demo'?'QUICK DEMO · ':''}SHIFT ${state.day} / 5</p>
     ${summary}
     <h2>NEW RULES</h2>
     ${incidentHtml}
@@ -3243,12 +3301,13 @@ function finishGame(){
     const c=CASES.find(item=>item.id===result.id);
     return `<details class="history-item"><summary><span>${safe(result.id)} · ${safe(ACTION_LABEL[result.action])}</span><strong>${result.correct?'✓':'×'}</strong></summary>${renderEvidenceMail(c)}<p class="history-reason">${safe(plainReason(c))}</p></details>`;
   }).join('');
-  modal(`<p class="modal-kicker">END OF PILOT / FIVE SHIFTS COMPLETE</p><h2>${title}</h2><div class="status-banner neutral">◈ &nbsp; AGENT CLASSIFICATION: ${tier}</div>
+  modal(`<p class="modal-kicker">${state.mode==='demo'?'QUICK DEMO COMPLETE':'FIVE SHIFTS COMPLETE'}</p><h2>${title}</h2><div class="status-banner neutral">◈ &nbsp; AGENT CLASSIFICATION: ${tier}</div>
     ${aftershock}<div class="review-grid"><div class="mini-block"><small>OPERATIONS</small><strong>${state.operations}%</strong></div><div class="mini-block"><small>CYBERSECURITY</small><strong>${state.security}%</strong></div><div class="mini-block"><small>CORRECT DECISIONS</small><strong>${correct}/${TOTAL_CASES}</strong></div><div class="mini-block"><small>INSPECTION TIME</small><strong>${minuteClock(time)}</strong></div></div>
     <p class="modal-copy">Best run: <strong>${bestDecisionRun(state.completed)}</strong> · Goal: both ≥${GOAL_SCORE}% · Alerts: <strong>${state.incidents.length}</strong>.</p>
     <details><summary style="cursor:pointer;color:#eac38d;font:12px var(--mono);padding:12px 0">▤  OPEN FULL DECISION LOG</summary>${history}</details>
-    <div class="modal-actions"><button class="modal-secondary" id="sources-end" type="button">SOURCES</button><button class="modal-primary" id="retry-btn" style="margin:0" type="button">↻ &nbsp; PLAY AGAIN</button></div>`);
-  $('retry-btn').onclick=startGame;
+    <div class="modal-actions"><button class="modal-secondary" id="sources-end" type="button">SOURCES</button><button class="modal-primary" id="retry-btn" style="margin:0" type="button">↻ &nbsp; PLAY AGAIN</button>${state.mode==='demo'?'<button class="modal-secondary" id="full-run-btn" type="button">PLAY FULL GAME</button>':''}</div>`);
+  $('retry-btn').onclick=()=>startGame(state.mode);
+  if(state.mode==='demo')$('full-run-btn').onclick=()=>startGame('full');
   $('sources-end').onclick=()=>showSources('end');
 }
 function showSources(returnTo){
@@ -3269,8 +3328,9 @@ function showSources(returnTo){
 function finishGameView(){
   // Reopening a completed game's overview must never reapply incident penalties.
   state.screen='end';const correct=state.completed.filter(c=>c.correct).length;
-  modal(`<p class="modal-kicker">COMPLETED PILOT</p><h2>FINAL REPORT</h2><div class="modal-mini"><div class="mini-block"><small>OPERATIONS</small><strong>${state.operations}%</strong></div><div class="mini-block"><small>SECURITY</small><strong>${state.security}%</strong></div><div class="mini-block"><small>CORRECT</small><strong>${correct}/${TOTAL_CASES}</strong></div><div class="mini-block"><small>INCIDENTS</small><strong>${state.incidents.length}</strong></div></div><button class="modal-primary" id="retry-btn" type="button">↻ &nbsp; PLAY AGAIN</button>`);
-  $('retry-btn').onclick=startGame;
+  modal(`<p class="modal-kicker">COMPLETED PILOT</p><h2>FINAL REPORT</h2><div class="modal-mini"><div class="mini-block"><small>OPERATIONS</small><strong>${state.operations}%</strong></div><div class="mini-block"><small>SECURITY</small><strong>${state.security}%</strong></div><div class="mini-block"><small>CORRECT</small><strong>${correct}/${TOTAL_CASES}</strong></div><div class="mini-block"><small>INCIDENTS</small><strong>${state.incidents.length}</strong></div></div><button class="modal-primary" id="retry-btn" type="button">↻ &nbsp; PLAY AGAIN</button>${state.mode==='demo'?'<button class="modal-secondary" id="full-run-btn" type="button">PLAY FULL GAME</button>':''}`);
+  $('retry-btn').onclick=()=>startGame(state.mode);
+  if(state.mode==='demo')$('full-run-btn').onclick=()=>startGame('full');
 }
 function restoreFeedback(){
   // The source panel is not reachable from the decision modal; safeguard for future expansion.
@@ -3295,7 +3355,7 @@ $('action-quarantine').addEventListener('click',()=>decide('quarantine'));
 $('policy-toggle').addEventListener('click',()=>togglePolicy());
 $('close-policy').addEventListener('click',()=>togglePolicy(false));
 $('close-policy-top').addEventListener('click',()=>togglePolicy(false));
-$('sources-button').addEventListener('click',()=>{if(state.screen!=='brief-feedback')showSources();});
+$('sources-button').addEventListener('click',()=>{if(!['brief-feedback','tutorial'].includes(state.screen))showSources();});
 document.addEventListener('keydown',(event)=>{
   if(event.ctrlKey||event.metaKey||event.altKey||event.repeat)return;
   if(event.target.matches('input,textarea,select'))return;
@@ -3306,7 +3366,7 @@ document.addEventListener('keydown',(event)=>{
     else if(key==='d')decide('quarantine');
     else if(key==='p')togglePolicy();
   } else if(key==='enter'){
-    if(state.screen==='intro')startGame();
+    if(state.screen==='intro')practiceStep();
     else if(state.screen==='feedback')advance();
     else if(state.screen==='break')$('next-shift-btn')?.click();
   }

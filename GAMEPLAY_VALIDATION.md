@@ -41,3 +41,11 @@ Additional smoke tests: a complete 60-case run in headless Chromium at 390px mob
 ## Recommended human playtest (before v1.0)
 
 Ask 3–5 players to complete one session, and record only: (1) confusing decisions, (2) where the game felt repetitive, (3) whether both scores felt fair, (4) which helper they chose and whether it was useful, (5) one overall fun rating (1–5). Fix recurring problems before adding bosses or forensics.
+
+## v0.18 Alpha playtest build
+
+- 3 practice messages with no scoring; the short mode contains 12 selected cases across the original 5 policy stages; the full mode remains 60 cases.
+- 1,200 randomized run pairs were checked: each day retained its intended demo quota, dynamic verdicts matched visible security controls and no cases retained a link-scan signal without a visible URL.
+- On-device viewport simulation with Chromium: both modes played to completion on mobile (390 px) and desktop (1365 px); upgrading, returning to full mode and restart passed.
+- Operations time grace period changed from 180 to 300 seconds; penalty at most 1 per long email. This prevents perfectly accurate but moderately slow runs from failing primarily due to time.
+- Automated balance checks are in `BALANCE_RESULTS.json`; these are simulated outcomes, not human playtesting.
