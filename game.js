@@ -1,4 +1,4 @@
-/* PROTOCOL: TRUST v0.12 — mixed signals and replayable case templates. */
+/* PROTOCOL: TRUST v0.16.1 — neutral script highlights, lean app list, directional score cues. */
 'use strict';
 
 const SOURCE = Object.freeze({
@@ -1958,7 +1958,8 @@ let CASES = []; // Fresh, reviewed template variants are generated at game start
 
 const TOTAL_CASES = DAYS.length * 12;
 const FAST_THRESHOLD_SECONDS = 90;
-const FAST_CORRECT_BONUS = 2;
+const FAST_CORRECT_BONUS = 1;
+const GOAL_SCORE = 70;
 const ACTION_LABEL = { forward:'FORWARD', review:'HUMAN REVIEW', quarantine:'QUARANTINE' };
 const ACTION_ICON = { forward:'✓', review:'⌕', quarantine:'×' };
 const ACTION_SHORT = { forward:'FWD', review:'REV', quarantine:'QUARANTINE' };
@@ -1969,9 +1970,73 @@ const safe = (s) => String(s ?? '').replace(/[&<>"']/g, (c)=>({'&':'&amp;','<':'
 const state = {
   screen:'intro', day:1, index:0, operations:82, security:82,
   seconds:0, chosen:null, detailedFeedback:false, completed:[], pending:[], incidents:[],
-  log:['› Message screening channel initialized.'], formerScreen:null
+  log:['› Message screening channel initialized.'], formerScreen:null, scripts:[], nextSecurityAlerts:[], appPolicy:{zoom:false,notion:false,safebox:false},shiftOpeningOps:82,shiftOpeningSec:82
 };
 
+const SCRIPT_OPTIONS = [
+ {id:'request',name:'REQUEST HIGHLIGHTER',description:'Marks specific requests in the text.'},
+ {id:'app',name:'APP DETECTOR',description:'Finds app names in emails.'},
+ {id:'link',name:'LINK HIGHLIGHTER',description:'Highlights website names in emails.'}
+];
+const APP_POLICY_OPTIONS = [
+  {zoom:false,notion:false,safebox:false},
+  {zoom:true,notion:false,safebox:true},
+  {zoom:false,notion:true,safebox:true},
+  {zoom:true,notion:true,safebox:false}
+];
+function chooseAppPolicy(){return {...pick(APP_POLICY_OPTIONS)}}
+function activeAppRows(){
+  const p=state.appPolicy;
+  return [
+    'Microsoft 365', 'Microsoft Teams', 'SharePoint',
+    'WhatsApp', 'Signal', 'Visual Studio Code',
+    ...(p.zoom?['Zoom']:[]),
+    ...(p.notion?['Notion']:[]),
+    ...(p.safebox?['SafeBox']:[])
+  ];
+}
+// The app register and the content detection are separate tools.
+// A matching approval record can authorize an exception to the company default.
+function referencedVariableApp(c){
+  const text=c.subject+' '+c.body;
+  for(const name of ['Zoom','Notion','SafeBox'])if(new RegExp('\\b'+name+'\\b','i').test(text))return name.toLowerCase();
+  return null;
+}
+function applyAppPolicy(c){
+  if(c.day<3 || !c.signals.app)return c;
+  const app=referencedVariableApp(c);
+  if(!app)return c;
+  if(c.signals.access==='verified' && hasApprovedChange(c)){
+    c.signals.app='approved';return c;
+  }
+  c.signals.app=state.appPolicy[app]?'approved':(app==='zoom'?'approval':'unlisted');
+  return c;
+}
+function scriptAvailable(id){return state.scripts.includes(id)}
+function senderEmail(from){return (String(from).match(/<([^<>]+)>/)||[])[1]?.toLowerCase()||String(from).trim().toLowerCase()}
+const KNOWN_APPS = ['Microsoft 365','Microsoft Teams','Teams','Visual Studio Code','SharePoint','WhatsApp','Signal','Zoom','Notion','SafeBox','MeetRoomX'];
+function mentionedApps(message){
+ const text=String(message),matches=[];
+ for(const app of KNOWN_APPS){
+   if(new RegExp('\\b'+app.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','i').test(text))matches.push(app);
+ }
+ return matches.filter(x=>!(x==='Teams'&&matches.includes('Microsoft Teams')));
+}
+// Link Inspector is a text helper, not a security reputation scanner.
+// Include bare links (the game displays URLs without a protocol prefix).
+const DOMAIN_REGEX = /\b(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:example|com|net|org|io|dev|eu|gov|edu|info|ai|hu|uk|co)(?::\d+)?/gi;
+function findDomains(message){
+ const t=String(message).replace(/https?:\/\//gi,'');
+ const result=[];
+ for(const m of t.matchAll(DOMAIN_REGEX)){
+   if(m.index>0 && t[m.index-1]==='@')continue; // An address is not a link.
+   result.push({index:m.index,length:m[0].length,domain:m[0].toLowerCase()});
+ }
+ return result;
+}
+function linkDomains(message){
+ return [...new Set(findDomains(message).map(m=>m.domain))].slice(0,3);
+}
 let resultAdvanceTimer=null;
 let emojiShowTimer=null;
 let emojiClearTimer=null;
@@ -1987,30 +2052,29 @@ function feedbackOption(){
 function bindFeedbackOption(){
   $('feedback-toggle').addEventListener('change',e=>{state.detailedFeedback=e.target.checked;});
 }
-function floatingEmoji(metricId,emoji){
-  const metric=$(metricId),rect=metric.getBoundingClientRect();
+// Positive score changes appear on the left of the metric; losses on the right.
+function floatingEmoji(metricId,emoji,side='left'){
+  const metric=$(metricId);
+  if(!metric)return;
+  const rect=metric.getBoundingClientRect();
   const pop=document.createElement('span');
-  pop.className='metric-emoji';
+  pop.className='metric-emoji '+(side==='right'?'metric-emoji-loss':'metric-emoji-gain');
   pop.textContent=emoji;
   pop.setAttribute('aria-hidden','true');
-  // Keep the cue visible on narrow screens and when the score panel is below the fold.
-  const top=Math.max(12,Math.min(window.innerHeight-54,rect.top+4));
-  const left=Math.max(12,Math.min(window.innerWidth-64,rect.right-44));
-  pop.style.top=`${top}px`;pop.style.left=`${left}px`;
+  const top=Math.max(12,Math.min(window.innerHeight-54,rect.top+10));
+  const left=side==='right'?rect.right-34:rect.left+2;
+  pop.style.top=`${top}px`;
+  pop.style.left=`${Math.max(5,Math.min(window.innerWidth-42,left))}px`;
   document.body.appendChild(pop);
 }
-function scheduleEmojiFeedback(c,correct,fastBonus){
+function scheduleEmojiFeedback(opsChange,secChange){
   emojiShowTimer=setTimeout(()=>{
-    if(correct){
-      floatingEmoji('ops-metric',fastBonus?'😊':'✓');
-      if(c.verdict==='quarantine')floatingEmoji('security-metric','😊');
-    }else if(state.chosen==='forward'&&c.signals.attachment==='malware'){
-      floatingEmoji('security-metric','🦠');
-    }else{
-      floatingEmoji(state.chosen==='forward'?'security-metric':'ops-metric','⚠️');
-    }
-    emojiClearTimer=setTimeout(()=>document.querySelectorAll('.metric-emoji').forEach(el=>el.remove()),950);
-  },320);
+    if(opsChange>0)floatingEmoji('ops-metric','😊','left');
+    if(opsChange<0)floatingEmoji('ops-metric','😕','right');
+    if(secChange>0)floatingEmoji('security-metric','🛡️','left');
+    if(secChange<0)floatingEmoji('security-metric','⚠️','right');
+    emojiClearTimer=setTimeout(()=>document.querySelectorAll('.metric-emoji').forEach(el=>el.remove()),1050);
+  },300);
 }
 function logMessage(message){
   state.log.unshift('› '+message);
@@ -2018,13 +2082,16 @@ function logMessage(message){
   $('log-lines').innerHTML=state.log.map(x=>`<div>${safe(x)}</div>`).join('');
 }
 function minuteClock(seconds){return `${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;}
-function waitCost(){return Math.min(3,Math.max(0,Math.ceil((state.seconds-FAST_THRESHOLD_SECONDS)/75)));}
+// Time is guidance, not a reflex test. Allow three minutes per email before a small cost.
+function waitCost(){return state.seconds<=180?0:Math.min(2,Math.ceil((state.seconds-180)/180));}
 function speedStatus(){return state.seconds<=FAST_THRESHOLD_SECONDS?'':`Time penalty: −${waitCost()} Ops`;}
 function updateHUD(){
   $('day-label').textContent=`${String(state.day).padStart(2,'0')} / 05`;
   $('completed-label').textContent=`${String(state.completed.length).padStart(2,'0')} / ${TOTAL_CASES}`;
   $('ops-value').textContent=state.operations+'%'; $('security-value').textContent=state.security+'%';
   $('ops-fill').style.width=state.operations+'%'; $('security-fill').style.width=state.security+'%';
+  $('goal-note').textContent=`GOAL: both ≥ ${GOAL_SCORE}%`;
+  $('goal-note').classList.toggle('goal-met',state.operations>=GOAL_SCORE&&state.security>=GOAL_SCORE);
   $('time-value').textContent=minuteClock(state.seconds);
   $('time-penalty').textContent=speedStatus();
   const canPlay=state.screen==='play';
@@ -2098,7 +2165,7 @@ function renderPolicies(){
       output+=`<section class="playbook-group" aria-label="${safe(r.category)} rules"><h3 class="playbook-group-head"><span class="playbook-number">${CATEGORY_INDEX[r.category]}</span><span>${safe(r.category)}</span></h3><div class="playbook-rows">`;
       if(r.category==='APPS'){
         output+='<div class="playbook-inventory"><div class="inventory-title">COMPANY APP LIST</div>';
-        output+=p.apps.filter(([name])=>name!=='Unlisted app').map(([name,note])=>`<div class="inventory-row"><div class="inventory-copy"><strong>${safe(name)}</strong><small>${safe(APP_NOTES[name.replace(/ \/ .*/, '')]||APP_NOTES[name]||note)}</small></div></div>`).join('');
+        output+=`<ul class="company-app-bullets">${activeAppRows().map(name=>`<li>${safe(name)}</li>`).join('')}</ul>`;
         output+='</div>';
       }
       if(r.category==='ACCESS'){
@@ -2114,13 +2181,59 @@ function renderPolicies(){
 }
 // Render messages as inert text only. The protocol is deliberately hidden in the UI.
 function renderInactiveLinks(segment){
-  return segment.split(/(https?:\/\/[^\s<>]+)/g).map(part =>
-    /^https?:\/\//.test(part)
-      ? `<span class="fake-link" title="Link disabled">${safe(part.replace(/^https?:\/\//,''))}</span>`
-      : safe(part)
-  ).join('');
+  // Display link-like text without navigation or a protocol prefix.
+  const text=String(segment).replace(/https?:\/\//gi,'');
+  let out='',cursor=0;
+  for(const m of text.matchAll(DOMAIN_REGEX)){
+    if(m.index>0 && text[m.index-1]==='@')continue;
+    out+=safe(text.slice(cursor,m.index));
+    out+=`<span class="fake-link" title="Link disabled">${safe(m[0])}</span>`;
+    cursor=m.index+m[0].length;
+  }
+  return out+safe(text.slice(cursor));
 }
-function renderMailText(body){ return renderInactiveLinks(body); }
+// All helpers highlight what they FIND, whether or not a rule is triggered.
+// Neither an app name, a request, nor a domain is a verdict.
+const REQUEST_PATTERNS = [
+  /\b(?:please|kindly)\s+(?:(?:do|also|first)\s+)?(?:review|confirm|check|send|share|provide|copy|reply|approve|accept|install|download|upload|open|join|sign|register|change|reset|update|enable|disable|turn off|link|connect|scan|complete|forward|submit|verify)\b(?:\s+[\w-]+){0,2}/gi,
+  /\b(?:could|can|would|will)\s+(?:(?:you|someone|your team|the team|your office)\s+)(?:please\s+)?(?:review|confirm|check|send|share|provide|reply|approve|install|upload|open|join|change|reset|update|sign|verify|forward|submit)\b(?:\s+[\w-]+){0,2}/gi,
+  /\b(?:change|reset|update)\s+(?:your|the)\s+password\b/gi,
+  /\b(?:sign in|log in|Linked Devices|scan the QR code|enable macros|enable content|disable protection|turn off Office protection)\b/gi,
+  /\b(?:send|share|provide|copy|reply with)\s+(?:(?:us|me)\s+)?(?:(?:your|the|a|my|this|Microsoft)\s+)?(?:current\s+)?(?:password|PIN|sign[- ]in code|verification code|MFA code|one[- ]time sign[- ]in code)\b/gi
+];
+function mailActionMatches(text){
+  const result=[];
+  for(const re of REQUEST_PATTERNS){
+    re.lastIndex=0;
+    for(const match of text.matchAll(re))result.push({index:match.index,length:match[0].length,type:'request'});
+  }
+  return result;
+}
+function renderMailText(body){
+  const text=String(body).replace(/https?:\/\//gi,'');
+  const found=[];
+  if(scriptAvailable('app')){
+    for(const name of mentionedApps(text)){
+      const re=new RegExp('\\b'+name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','gi');
+      for(const match of text.matchAll(re))found.push({index:match.index,length:match[0].length,type:'app'});
+    }
+  }
+  if(scriptAvailable('request'))found.push(...mailActionMatches(text));
+  if(scriptAvailable('link')){
+    for(const match of findDomains(text))found.push({...match,type:'link'});
+  }
+  // A single word can be mentioned by multiple tools. App names get the first mark.
+  const priority={app:0,link:1,request:2};
+  found.sort((a,b)=>a.index-b.index||priority[a.type]-priority[b.type]||b.length-a.length);
+  let result='',cursor=0;
+  for(const match of found){
+    if(match.index<cursor)continue;
+    result+=renderInactiveLinks(text.slice(cursor,match.index));
+    result+=`<mark class="script-${match.type}-highlight" title="${{app:'App Detector',request:'Request Highlighter',link:'Link Highlighter'}[match.type]}">${safe(text.slice(match.index,match.index+match.length))}</mark>`;
+    cursor=match.index+match.length;
+  }
+  return result+renderInactiveLinks(text.slice(cursor));
+}
 function renderAnnotatedText(body, snippets=[]){
   if(!snippets.length) return renderInactiveLinks(body);
   const escaped=snippets.slice().sort((a,b)=>b.length-a.length).map(s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
@@ -2318,6 +2431,34 @@ const CASE_TEMPLATES = [
         "flag": "credential",
         "highlight": [
           "current password"
+        ]
+      }
+    ]
+  },
+  {
+    "day": 2,
+    "code": "password-reminder",
+    "from": "IT Service Desk <support@asterion.example>",
+    "channel": "Email / Internal",
+    "url": false,
+    "attach": false,
+    "app": null,
+    "access": null,
+    "variants": [
+      {
+        "subject": "Password renewal reminder",
+        "body": "Hi,\n\nYour work password is due to expire on Friday. Please change your password in the company account settings before then.\n\nIT Service Desk",
+        "flag": null,
+        "highlight": [
+          "change your password"
+        ]
+      },
+      {
+        "subject": "Account password expired",
+        "body": "Hello,\n\nYour work password expired this morning. You can reset your password from the employee account settings page. Contact the service desk if you need access restored.\n\nIT Service Desk",
+        "flag": null,
+        "highlight": [
+          "reset your password"
         ]
       }
     ]
@@ -2660,6 +2801,42 @@ const CASE_TEMPLATES = [
   },
   {
     "day": 5,
+    "code": "password-security",
+    "from": "Accounts Team <accounts@asterion.example>",
+    "channel": "Email / Internal",
+    "url": false,
+    "attach": false,
+    "app": null,
+    "access": null,
+    "variants": [
+      {
+        "subject": "Password expires soon",
+        "body": "Hi,\n\nYour password expires next week. Change your password from the usual company account page during your next work session.\n\nAccounts Team",
+        "flag": null,
+        "highlight": [
+          "Change your password"
+        ]
+      },
+      {
+        "subject": "Account renewal notice",
+        "body": "Hello,\n\nYour company account password is due for a change. Please update your password in the employee account settings.\n\nAccounts Team",
+        "flag": null,
+        "highlight": [
+          "update your password"
+        ]
+      },
+      {
+        "subject": "Help with password renewal",
+        "body": "Hello,\n\nWe can renew the account from our desk. Reply with the password currently used for your account so we can check it.\n\nAccounts Team",
+        "flag": "credential",
+        "highlight": [
+          "Reply with the password"
+        ]
+      }
+    ]
+  },
+  {
+    "day": 5,
     "code": "chat-device",
     "from": "External Liaison <liaison@public-forum.example>",
     "channel": "Email / External",
@@ -2687,7 +2864,7 @@ const CASE_TEMPLATES = [
     ]
   }
 ];
-const DAY_BASE_QUOTA = {1:9,2:9,3:9,4:7,5:8};
+const DAY_BASE_QUOTA = {1:9,2:8,3:9,4:7,5:7};
 const BASE_SCAN_LIMITS = { malicious:1, malware:1, unknownLink:1, unscannedFile:2 };
 function pick(list) { return list[Math.floor(Math.random()*list.length)]; }
 function randomSender(day){
@@ -2721,6 +2898,7 @@ function createTemplateCase(template,index) {
     evidence:{body:variant.highlight||[]},
     why:'This decision follows the company rules.'
   };
+  applyAppPolicy(c);
   const result=expectedVerdict(c);
   c.verdict=result.action; c.ruleId=result.rule;
   return c;
@@ -2733,9 +2911,28 @@ function randomize(list){
   }
   return arr;
 }
+// Keep the queue surprising without changing any rules or outcomes.
+// Try several random orders and favor mixed decision types and rule categories.
+// No fixed Forward / Review / Quarantine cycle is imposed on the player.
+function paceShift(items){
+  let best=null, bestPenalty=Infinity;
+  for(let attempt=0;attempt<48;attempt++){
+    const deck=randomize(items);
+    let penalty=0,run=1;
+    for(let i=1;i<deck.length;i++){
+      const sameAction=deck[i].verdict===deck[i-1].verdict;
+      run=sameAction?run+1:1;
+      if(run>=4)penalty+=(run-3)*6;
+      if(deck[i].ruleId===deck[i-1].ruleId)penalty+=1;
+    }
+    if(penalty<bestPenalty){bestPenalty=penalty;best=deck;}
+    if(bestPenalty===0)break;
+  }
+  return best;
+}
 function pickBaseCases(day,count){
   const candidates=randomize(BASE_CASES.filter(c=>c.day===day));
-  if(day!==4)return candidates.slice(0,count);
+  if(day!==4)return candidates.slice(0,count).map(c=>applyAppPolicy(JSON.parse(JSON.stringify(c))));
   // Reduce automatic day-4 decisions. Keep at most one known malicious link,
   // one infected file, and a few uncertain scans in the selected shift.
   const selected=[];const scan={malicious:0,malware:0,unknownLink:0,unscannedFile:0};
@@ -2752,19 +2949,34 @@ function pickBaseCases(day,count){
     for(const key of Object.keys(scan))scan[key]+=increments[key];
   }
   if(selected.length<count)throw Error('Not enough reviewed cases for shift 4.');
-  return selected;
+  return selected.map(c=>applyAppPolicy(JSON.parse(JSON.stringify(c))));
 }
 function buildShiftDeck(){
   const deck=[];
   for(let day=1;day<=DAYS.length;day++){
     const fixed=pickBaseCases(day,DAY_BASE_QUOTA[day]);
     const generated=CASE_TEMPLATES.filter(t=>t.day===day).map((t,i)=>createTemplateCase(t,i+1));
-    const shift=randomize([...fixed,...generated]);
+    const shift=[...fixed,...generated];
     if(shift.length!==12)throw Error(`Shift ${day} has ${shift.length} cases`);
     deck.push(...shift);
   }
   if(deck.length!==TOTAL_CASES)throw Error('Wrong case count');
-  return deck;
+  const statusBySender=new Map(BASE_CASES.map(c=>[senderEmail(c.from),c.signals.sender]));
+  for(const c of deck){
+    const email=senderEmail(c.from);
+    if(c.id.startsWith('MX-')){
+      if(statusBySender.has(email))c.signals.sender=statusBySender.get(email);
+      else statusBySender.set(email,c.signals.sender);
+    }
+    applyAppPolicy(c); // Re-evaluate after a sender status becomes confirmed.
+    const verdict=expectedVerdict(c);
+    c.verdict=verdict.action;c.ruleId=verdict.rule;
+  }
+  const result=[];
+  for(let day=1;day<=DAYS.length;day++){
+    result.push(...paceShift(deck.filter(c=>c.day===day)));
+  }
+  return result;
 }
 CASES = buildShiftDeck();
 
@@ -2776,11 +2988,49 @@ const SCAN_LABELS = {
 };
 function renderScanSignals(c){
   const s=c.signals;
-  return ['sender','url','attachment'].filter(key=>s[key] && (key!=='url'||s.url!=='none')).map(key=>{
+  let parts=['sender','attachment'].filter(key=>s[key]).map(key=>{
     const v=s[key];
     const cls=['spoof','malicious','malware','thirdPartyCode'].includes(v)?'danger':(['unknown','approval','unlisted','unscanned','change','unverified'].includes(v)?'caution':'pass');
     return `<span class="scan-chip ${cls}" title="Security check">${safe(SCAN_LABELS[key][v])}</span>`;
-  }).join('');
+  });
+  if(scriptAvailable('app')){
+    const apps=mentionedApps(c.subject+' '+c.body);
+    if(apps.length)parts.push(`<span class="scan-chip script-app" title="App Detector">APP: ${safe(apps.join(', '))}</span>`);
+  }
+  if(scriptAvailable('link')){
+    const domains=linkDomains(c.subject+' '+c.body);
+    if(domains.length)parts.push(`<span class="scan-chip script">Domain: ${safe(domains.join(', '))}</span>`);
+  }
+  return parts.join('');
+}
+// Local, game-data-only inspection; never visits a URL or sends any data.
+function linkScanResult(c){
+  const domains=linkDomains(c.subject+' '+c.body);
+  if(!domains.length)return {domains,verdict:null};
+  const verdict=c.signals.url==='malicious'?'threat':c.signals.url==='unknown'?'unknown':'clear';
+  return {domains,verdict};
+}
+function closeLinkCheck(){
+  hideModal();
+  state.screen='play';
+  updateHUD();
+}
+function showLinkCheck(){
+  if(state.screen!=='play')return;
+  const c=CASES[state.index];
+  const result=linkScanResult(c);
+  state.screen='link-check';
+  updateHUD();
+  if(!result.domains.length){
+    modal(`<p class="modal-kicker">LINK CHECK</p><h2>NO LINK FOUND</h2><p class="linkcheck-note">There is no link in this email.</p><button class="modal-primary" id="close-linkcheck" type="button">BACK TO EMAIL</button>`);
+  }else{
+    const labels={threat:'THREAT FOUND',unknown:'UNCLEAR',clear:'NO THREAT FOUND'};
+    const desc={threat:'A known threat was reported.',unknown:'The result is not clear. Check the rules.',clear:'No known threat was found. This does not prove the link is safe.'};
+    const count=result.domains.length;
+    const urls=result.domains.map(s=>`<div class="linkcheck-domain">${safe(s)}</div>`).join('');
+    modal(`<p class="modal-kicker">LINK CHECK</p><h2>${count} ${count===1?'LINK':'LINKS'} FOUND</h2><div class="linkcheck-list">${urls}</div><div class="linkcheck-result ${result.verdict}"><strong>${labels[result.verdict]}</strong><span>${desc[result.verdict]}</span></div><button class="modal-primary" id="close-linkcheck" type="button">BACK TO EMAIL</button>`);
+  }
+  $('close-linkcheck').onclick=closeLinkCheck;
 }
 function renderEvidenceMail(c){
   const e=c.evidence||{};
@@ -2795,7 +3045,7 @@ function renderCase(){
   $('mail-id').textContent='REF: '+c.id;
   $('mail-from').textContent=c.from;
   $('mail-to').textContent=c.to;
-  $('mail-subject').textContent=c.subject;
+  $('mail-subject').innerHTML=renderMailText(c.subject);
   $('mail-channel').textContent=c.channel;
   $('mail-body').innerHTML=renderMailText(c.body);
   $('mail-number').textContent=String(state.index+1).padStart(4,'0');
@@ -2811,15 +3061,17 @@ function modal(markup){
 function hideModal(){ $('modal-root').classList.remove('visible'); $('modal-root').innerHTML=''; }
 function startGame(){
   clearResultTimers();
+  state.appPolicy=chooseAppPolicy();
   CASES = buildShiftDeck();
-  Object.assign(state,{screen:'play',day:1,index:0,operations:82,security:82,seconds:0,chosen:null,completed:[],pending:[],incidents:[],log:[]});
+  Object.assign(state,{screen:'play',day:1,index:0,operations:82,security:82,seconds:0,chosen:null,completed:[],pending:[],incidents:[],log:[],scripts:[],nextSecurityAlerts:[],shiftOpeningOps:82,shiftOpeningSec:82});
   hideModal();renderCase();logMessage('Shift 1 started. The message gateway is active.');
 }
 function openIntro(){
   state.screen='intro';renderCase();updateHUD();
   modal(`<p class="modal-kicker">PROTOCOL: TRUST</p>
     <h1>YOU ARE THE <em>AI.</em></h1>
-    <p class="modal-copy compact-copy">Read each email. Check the rules. Choose Forward, Review, or Quarantine.</p>
+    <p class="modal-copy compact-copy">Read each email. Use the rulebook. Pick Forward, Review, or Quarantine.</p>
+    <p class="modal-copy compact-copy">3 quick, correct choices in a row = +1 Operations.</p>
     
     ${feedbackOption()}
     <button class="modal-primary" id="begin-btn" type="button">START GAME</button>`);
@@ -2835,22 +3087,37 @@ function decide(action){
   const delay=waitCost();
   let opDelta=0,secDelta=0;
   if(correct){
-    if(action==='forward')opDelta=4;
-    if(action==='review'){opDelta=-1;secDelta=2;}
-    if(action==='quarantine'){secDelta=3;}
+    if(action==='forward')opDelta=1;
+    if(action==='review'){opDelta=-1;secDelta=1;}
+    if(action==='quarantine')secDelta=1;
   } else if(action==='forward'){
-    opDelta=3;
-    secDelta=expected.action==='quarantine'?-6:-8;
-    if(expected.action==='quarantine')state.pending.push({dueDay:Math.min(6,c.day+1),message:c.incident||'An unfiltered suspicious message triggered a security investigation.',from:c.id});
+    // Wrongly released messages appear efficient until the later investigation.
+    opDelta=1;
+    const severe=expected.action==='quarantine';
+    state.pending.push({
+      dueAt:state.completed.length+4, // three further emails after this one
+      loss:severe?14:4,
+      severe,from:c.id,
+      message:severe?(c.incident||'A released message caused a security incident.'):'A message needed verification before delivery.'
+    });
   } else if(action==='review'){
-    opDelta=-6;
-    secDelta=0;
+    opDelta=-2;
   } else if(action==='quarantine'){
-    opDelta=expected.action==='forward'?-13:-9;
+    opDelta=expected.action==='forward'?-5:-3;
   }
-  const fastBonus=correct && state.seconds<=FAST_THRESHOLD_SECONDS ? FAST_CORRECT_BONUS : 0;
+  // Reward a three-email streak of accurate, timely decisions; not every single click.
+  let fastRun=0;
+  if(correct && state.seconds<=FAST_THRESHOLD_SECONDS){
+    fastRun=1;
+    for(let i=state.completed.length-1;i>=0;i--){
+      const previous=state.completed[i];
+      if(!previous.correct||previous.seconds>FAST_THRESHOLD_SECONDS)break;
+      fastRun++;
+    }
+  }
+  const fastBonus=fastRun>0 && fastRun%3===0 ? FAST_CORRECT_BONUS : 0;
   opDelta += fastBonus;
-  opDelta-=delay;
+  opDelta -= delay;
   state.operations=clamp(state.operations+opDelta);
   state.security=clamp(state.security+secDelta);
   state.completed.push({id:c.id,day:c.day,action,verdict:expected.action,correct,seconds:state.seconds,opDelta:state.operations-beforeOps,secDelta:state.security-beforeSec,fastBonus,delay});
@@ -2858,7 +3125,7 @@ function decide(action){
   state.screen=state.detailedFeedback?'feedback':'brief-feedback';
   logMessage(`${c.id} / ${ACTION_LABEL[action]} / ${correct?'MATCH':'MISMATCH'}`);
   updateHUD();
-  scheduleEmojiFeedback(c,correct,fastBonus);
+  scheduleEmojiFeedback(state.operations-beforeOps,state.security-beforeSec);
   if(!state.detailedFeedback){
     resultAdvanceTimer=setTimeout(advance,1450);
     return;
@@ -2877,10 +3144,17 @@ function decide(action){
     <button class="modal-primary" id="continue-btn" type="button">${!CASES[state.index+1] || CASES[state.index+1].day!==c.day?'END SHIFT':'NEXT EMAIL'} →</button>`);
   $('continue-btn').onclick=advance;
 }
-function processIncidents(day){
-  const due=state.pending.filter(i=>i.dueDay<=day);
-  state.pending=state.pending.filter(i=>i.dueDay>day);
-  for(const inc of due){state.security=clamp(state.security-14);state.operations=clamp(state.operations-6);state.incidents.push(inc);logMessage('DELAYED INCIDENT / '+inc.from);}
+function processIncidents(){
+  const due=state.pending.filter(i=>i.dueAt<=state.completed.length);
+  state.pending=state.pending.filter(i=>i.dueAt>state.completed.length);
+  for(const inc of due){
+    state.security=clamp(state.security-inc.loss);
+    state.incidents.push(inc);
+    state.nextSecurityAlerts.push(inc);
+    logMessage('SECURITY EVENT / '+inc.from);
+    if(state.screen==='play' || state.screen==='brief-feedback')floatingEmoji('security-metric',inc.severe?'🦠':'⚠️','right');
+  }
+  if(due.length)updateHUD();
   return due;
 }
 function advance(){
@@ -2888,42 +3162,82 @@ function advance(){
   const priorDay=state.day;
   state.index++;state.seconds=0;state.chosen=null;
   hideModal();
+  processIncidents();
   if(state.index>=CASES.length){finishGame();return;}
   const nextCase=CASES[state.index];
   if(nextCase.day!==priorDay){
     state.day=nextCase.day;
-    const incidents=processIncidents(state.day);
+    const incidents=state.nextSecurityAlerts.splice(0);
     state.screen='break';renderCase();showShiftIntro(incidents,priorDay);
   }else{
     state.screen='play';renderCase();
   }
+}
+function bestDecisionRun(results){
+  let current=0,best=0;
+  for(const result of results){current=result.correct?current+1:0;best=Math.max(best,current);}
+  return best;
 }
 function showShiftIntro(incidents,completedDay=state.day-1){
   const d=DAYS[state.day-1];
   const newRules=SIMPLE_RULES.filter(r=>r.day===state.day);
   const results=state.completed.filter(c=>c.day===completedDay);
   const correct=results.filter(c=>c.correct).length;
-  const summary=`<div class="shift-summary"><strong>SHIFT ${completedDay} COMPLETE</strong><span>${correct}/${results.length} correct</span><span>OPS ${state.operations}%</span><span>SEC ${state.security}%</span></div>`;
+  const signed=(num)=>`${num>0?'+':''}${num}`;
+  const shiftOps=state.operations-state.shiftOpeningOps;
+  const shiftSec=state.security-state.shiftOpeningSec;
+  const summary=`<div class="shift-summary"><strong>SHIFT ${completedDay} COMPLETE</strong><span>${correct}/${results.length} correct</span><span>BEST RUN ${bestDecisionRun(results)}</span><span>OPS ${state.operations}% (${signed(shiftOps)})</span><span>SEC ${state.security}% (${signed(shiftSec)})</span><span>${incidents.length?'⚠ '+incidents.length+' ALERT'+(incidents.length===1?'':'S'):(correct===results.length&&results.length?'★ PERFECT SHIFT':(state.operations>=GOAL_SCORE&&state.security>=GOAL_SCORE?'GOAL MET':'BELOW GOAL'))}</span></div>`;
   const incidentHtml=incidents.length?`<div class="shift-brief"><h3>SECURITY ALERT</h3>${incidents.map(inc=>`<div class="incident">${safe(inc.message)}</div>`).join('')}</div>`:'';
+  const pickScript=[3,5].includes(state.day);
+  const availableScripts=SCRIPT_OPTIONS.filter(x=>!scriptAvailable(x.id));
+  const upgrades=pickScript?`<div class="upgrade-panel"><h3>CHOOSE A SCRIPT</h3><div class="upgrade-options">${availableScripts.map(x=>`<button class="upgrade-btn" type="button" data-upgrade="${x.id}" aria-pressed="false"><strong>${x.name}</strong><small>${x.description}</small></button>`).join('')}</div><p id="upgrade-selection" class="upgrade-selection">Choose one. You can change it before starting.</p></div>`:'';
   modal(`<p class="modal-kicker">SHIFT ${state.day} / 5</p>
     ${summary}
     <h2>NEW RULES</h2>
     ${incidentHtml}
-    <div class="shift-focus">${newRules.map(x=>`<div class="focus-row"><span class="focus-action ${x.action}">${ACTION_ICON[x.action]} ${ACTION_SHORT[x.action]}</span><span>${safe(x.text)}</span></div>`).join('')}</div>
+    <div class="shift-focus">${newRules.map(x=>`<div class="focus-row"><span class="focus-action ${x.action}">${ACTION_ICON[x.action]} ${x.action==='quarantine'?'QUAR':ACTION_SHORT[x.action]}</span><span>${safe(x.text)}</span></div>`).join('')}</div>
+    ${upgrades}
     ${feedbackOption()}
-    <button class="modal-primary" id="next-shift-btn" type="button">START SHIFT →</button>`);
+    <button class="modal-primary" id="next-shift-btn" type="button" ${pickScript?'disabled':''}>START SHIFT →</button>`);
   bindFeedbackOption();
-  $('next-shift-btn').onclick=()=>{state.screen='play';hideModal();updateHUD();logMessage(`Shift ${state.day} started.`);};
+  let selectedUpgrade=null;
+  if(pickScript){
+    document.querySelectorAll('[data-upgrade]').forEach(btn=>btn.addEventListener('click',()=>{
+      selectedUpgrade=btn.dataset.upgrade;
+      document.querySelectorAll('[data-upgrade]').forEach(el=>{
+        const selected=el.dataset.upgrade===selectedUpgrade;
+        el.classList.toggle('picked',selected);
+        el.setAttribute('aria-pressed',String(selected));
+      });
+      $('upgrade-selection').textContent='Selected: '+SCRIPT_OPTIONS.find(x=>x.id===selectedUpgrade).name;
+      $('next-shift-btn').disabled=false;
+    }));
+  }
+  $('next-shift-btn').onclick=()=>{
+    if(pickScript && !selectedUpgrade)return;
+    if(selectedUpgrade && !state.scripts.includes(selectedUpgrade))state.scripts.push(selectedUpgrade);
+    state.shiftOpeningOps=state.operations;
+    state.shiftOpeningSec=state.security;
+    state.screen='play';hideModal();renderCase();updateHUD();logMessage(`Shift ${state.day} started.`);
+  };
 }
 function finishGame(){
-  const incidents=processIncidents(6);
+  // End-of-run audit: do not allow late incidents to disappear after the last email.
+  for(const inc of state.pending){
+    state.security=clamp(state.security-inc.loss);
+    state.incidents.push(inc);
+    state.nextSecurityAlerts.push(inc);
+  }
+  state.pending=[];
+  const incidents=state.nextSecurityAlerts.splice(0);
+  updateHUD();
   state.screen='end';updateHUD();
   const correct=state.completed.filter(c=>c.correct).length;
   const time=state.completed.reduce((n,c)=>n+c.seconds,0);
   let title='RECALIBRATION REQUIRED';
   let tier='NEEDS WORK';
-  if(state.operations>=65 && state.security>=75 && correct>=Math.ceil(TOTAL_CASES*.8)){title='SYSTEM OPERATIONAL';tier='STABLE';}
-  if(state.operations>=80 && state.security>=90 && correct>=Math.ceil(TOTAL_CASES*.95)){title='EXCELLENT SHIFT';tier='EXCELLENT';}
+  if(state.operations>=GOAL_SCORE && state.security>=GOAL_SCORE && correct>=Math.ceil(TOTAL_CASES*.8)){title='SYSTEM OPERATIONAL';tier='STABLE';}
+  if(state.operations>=85 && state.security>=85 && state.incidents.length===0 && correct>=Math.ceil(TOTAL_CASES*.95)){title='EXCELLENT SHIFT';tier='EXCELLENT';}
   const aftershock=incidents.length?`<div class="shift-brief"><h3>FINAL INCIDENT REPORT</h3>${incidents.map(i=>`<div class="incident"><span>${safe(i.from)}</span>${safe(i.message)}</div>`).join('')}</div>`:'';
   const history=state.completed.map(result=>{
     const c=CASES.find(item=>item.id===result.id);
@@ -2931,7 +3245,7 @@ function finishGame(){
   }).join('');
   modal(`<p class="modal-kicker">END OF PILOT / FIVE SHIFTS COMPLETE</p><h2>${title}</h2><div class="status-banner neutral">◈ &nbsp; AGENT CLASSIFICATION: ${tier}</div>
     ${aftershock}<div class="review-grid"><div class="mini-block"><small>OPERATIONS</small><strong>${state.operations}%</strong></div><div class="mini-block"><small>CYBERSECURITY</small><strong>${state.security}%</strong></div><div class="mini-block"><small>CORRECT DECISIONS</small><strong>${correct}/${TOTAL_CASES}</strong></div><div class="mini-block"><small>INSPECTION TIME</small><strong>${minuteClock(time)}</strong></div></div>
-    <p class="modal-copy">Delayed incidents: <strong>${state.incidents.length}</strong>. Both indicators matter: blanket blocking is not enough, and neither is fast approval.</p>
+    <p class="modal-copy">Best run: <strong>${bestDecisionRun(state.completed)}</strong> · Goal: both ≥${GOAL_SCORE}% · Alerts: <strong>${state.incidents.length}</strong>.</p>
     <details><summary style="cursor:pointer;color:#eac38d;font:12px var(--mono);padding:12px 0">▤  OPEN FULL DECISION LOG</summary>${history}</details>
     <div class="modal-actions"><button class="modal-secondary" id="sources-end" type="button">SOURCES</button><button class="modal-primary" id="retry-btn" style="margin:0" type="button">↻ &nbsp; PLAY AGAIN</button></div>`);
   $('retry-btn').onclick=startGame;
@@ -2974,6 +3288,7 @@ function togglePolicy(force){
   policy.classList.toggle('open',typeof force==='boolean'?force:!policy.classList.contains('open'));
 }
 
+$('link-check-button').addEventListener('click',showLinkCheck);
 $('action-forward').addEventListener('click',()=>decide('forward'));
 $('action-review').addEventListener('click',()=>decide('review'));
 $('action-quarantine').addEventListener('click',()=>decide('quarantine'));
@@ -2995,9 +3310,9 @@ document.addEventListener('keydown',(event)=>{
     else if(state.screen==='feedback')advance();
     else if(state.screen==='break')$('next-shift-btn')?.click();
   }
-  if(key==='escape')togglePolicy(false);
+  if(key==='escape'){if(state.screen==='link-check')closeLinkCheck();else togglePolicy(false);}
 });
 setInterval(()=>{
-  if(state.screen==='play'&&!document.hidden){state.seconds++;$('time-value').textContent=minuteClock(state.seconds);$('time-penalty').textContent=speedStatus();}
+  if(['play','link-check'].includes(state.screen)&&!document.hidden){state.seconds++;$('time-value').textContent=minuteClock(state.seconds);$('time-penalty').textContent=speedStatus();}
 },1000);
 openIntro();

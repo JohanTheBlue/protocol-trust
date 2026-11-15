@@ -26,3 +26,6 @@ The 35 carried-over cases sometimes link to a research report as a **technique r
 
 ## Procedural examples (v0.12)
 The 18 scenario templates in `game.js` are original, fictional messages. Sender-check outcomes and scanner outcomes are randomly combined with reviewed message variants. They are not derived from raw .eml samples. Only base cases marked with an `.eml` origin have Phishing Pot provenance. A “No alert” scan is not proof of safety.
+
+## v0.15 content
+Two new password-notice templates (`password-reminder`, `password-security`) were authored for gameplay testing. They are synthetic, contain no live links, and are not presented as extracts from PhishingPot. Real-world rationale: an authenticated sender or ordinary password-reset reference is not in itself proof of a phishing attempt; actual requests for authentication secrets require different treatment. Reference: https://learn.microsoft.com/en-us/defender-office-365/email-auth-sec-ops-guide

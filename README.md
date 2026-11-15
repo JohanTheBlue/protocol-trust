@@ -1,42 +1,66 @@
-# PROTOCOL: TRUST — v0.12
+# PROTOCOL: TRUST — v0.17
 
-Static, offline-friendly cyber email triage game. Open `index.html` locally or publish to GitHub Pages. No backend or real emails are processed in the game.
+A compact, offline-friendly email-screening game inspired by the decision workflow in *Papers, Please*. Five shifts, 60 cases per run, three choices: Forward, Human Review, Quarantine.
 
-## Gameplay
-- **5 shifts**, **60 cases per game** (12 per shift), newly drawn and shuffled whenever a game starts. Rules still unlock in order.
-- Six simple categories: Sender, Sign-in, Apps, Links, Files, Access.
-- Three decisions: Forward / Human Review / Quarantine.
-- Operations and Security scores, time bonus, delayed incidents.
-- Per-email result panel **off by default**. Turn it on at the start or between shifts; brief emoji feedback appears beside the score meters.
-- Short shift-end summaries and a full final report are always shown.
-- 18 fictional scenario templates mix sender status, message requests and link/file scan results between games. They are original examples, not Phishing Pot originals.
-- Shift 4 limits obviously decisive scan labels to at most one known malicious URL and one malware detection from the fixed case pool. Neutral scans do not override suspicious requests.
-- 31 fictional emails were revised for more natural writing and fewer answer-giving phrases; the six adapted Phishing Pot cases were kept unchanged in this update.
-- Minimal visual playbook; shorter inbox flow with optional per-email results.
+## v0.17 — Link Check panel
 
-## Where the email cases came from
-- **35** carried-over fictional cases; some are inspired by public incident reports, but no original emails were copied.
-- **19** new fictional cases designed to test the current playbook.
-- **6** new cases **adapted from real `.eml` samples** in [Phishing Pot](https://github.com/rf-peixoto/phishing_pot). These are significantly rewritten and use fictional senders, safe `.example` URLs, and fictional scan results. They are **not forensic originals**. Attribution and original blob SHAs are in `CASE_SOURCES.json`.
-- Source samples from Phishing Pot are licensed **CC BY-NC 4.0**. This game must respect the dataset's attribution and noncommercial terms; review licensing before commercial distribution.
+- **LINK CHECK** is available below the current email. Opening it checks the visible subject/body for URLs; it shows `No link found` if none are present.
+- A link may show `Threat found`, `Unclear`, or `No threat found`. An absence of alerts is **not** proof of safety.
+- The email's old Link scan verdict badge is hidden until the player opens the separate panel.
+- The optional third script is now **Link Highlighter**: it only marks domain names and is separate from the Link Check panel.
+- The link check uses predefined, fictional **game-case results** and performs **no network requests or real-world URL reputation lookups**. All email links remain disabled.
+- No changes to game rules, the 60-case set, or Ops/Sec scoring.
 
-## Source-processing pipeline (offline)
-1. Obtain the email samples from the upstream repo yourself, following its license and safety guidance. Do **not** publish its raw `.eml` files in this game repository.
-2. Produce **review-only** candidates from a local folder (Python 3 standard library, no dependency):
+## Publish to GitHub Pages (Termux)
 
-   `python tools/eml_to_candidates.py /path/to/phishing_pot/email --output imports/candidates.json --limit 40`
+```sh
+cd ~/protocol-trust
+unzip -o ~/storage/downloads/protocol_trust_v017.zip -d .
+git add . && git commit -m "Add Link Check panel v0.17" && git push
+```
 
-3. Inspect the candidate data manually for privacy and safety; a raw phishing sample does **not** automatically tell us what the game verdict should be.
-4. Choose an applicable game rule, rewrite the case into the fictional company setting, replace all URLs with inert `.example` placeholders, record the original path and content hash, then add a reviewed case to `BASE_CASES` in `game.js` and `CASE_SOURCES.json`.
-5. Check the decision, evidence highlights and source provenance, then test the full game. Only checked examples should go live.
+## Fixes from v0.16
 
-**Safety:** The importer reads only text; it never runs HTML, opens URLs, or saves attachments. However, imported drafts still require manual review. The `imports/` folder and `.eml` files are ignored by Git. No real external URLs are live in the game.
+- App Detector recognizes **SharePoint** and **MeetRoomX** as app names when the App Detector script is equipped. Detection is separate from approval; an unlisted app may still be detected.
+- Delayed incidents lower **Security only**, not Operations. Incorrect decisions can still affect Operations immediately.
 
-## v0.12 replay logic
-- Reviewed base pool: 60 cases (35 original + 19 newly fictional + 6 adapted Phishing Pot).
-- Each new game draws 42 base cases and builds 18 fictional variants from 18 manually written scenario templates (60 cases total).
-- Day 4 draws seven base cases under scanner-alert caps and five generated variants.
-- The game draws **evidence**, not random correct answers. The same public rule engine classifies each combination.
-- Scanner “No alert” does not mean the sender or request is safe. A direct request for an authentication code still requires quarantine.
-- Some base examples are intentionally easier. The harder challenge comes from mixed signals rather than making every single case ambiguous.
-- Template variants are synthetic: they have no direct forensic source and are never labeled as adapted .eml cases.
+## Changes from v0.14
+
+- Added genuine-looking **password-expiration reminders**: mentioning password renewal is not enough to quarantine. Requests to **send** an actual password are different. Sender status may still require Human Review.
+- Upgrades now have a clear selection state. **You can switch your selection until you press START SHIFT**; only then is the script activated.
+- The fictional company app inventory varies **per new game**, but remains constant within that playthrough. The same rules consistently determine the outcome. Zoom may require approval; Notion and SafeBox may be authorized or unlisted.
+- The **App Detector** and **Request Highlighter** are independent optional helpers, with different colors. The latter highlights full requests instead of isolated everyday words like “send” and “share.” Neither helper automatically decides the case.
+- All 6 security categories, the 60-case limit, delayed incidents, Ops/Sec scoring and the underlying case sources otherwise stay as before.
+
+The added password reminders are **fictional examples**, not verbatim PhishingPot emails. `CASE_AUDIT.json` contains the original static case audit; random company policies can change the answer for a few app-approval cases at runtime.
+
+## GitHub Pages deployment (Android Termux)
+
+```sh
+cd ~/protocol-trust
+unzip -o ~/storage/downloads/protocol_trust_v0161.zip -d .
+git add .
+git commit -m "Neutral helpers and score cues v0.16.1"
+git push
+```
+
+GitHub Pages deploys automatically after push. Email links inside the game are inert.
+
+## v0.16 — gameplay balance
+
+- 60 existing emails and 13 playbook rules are unchanged.
+- Per-shift order prefers a mix of decision types rather than long runs of identical outcomes. The correct action for any email does not change.
+- Operations: correct Forward +1, correct Human Review -1, correct Quarantine 0. Three consecutive correct choices within 90 seconds each give +1 Operations. No time penalty for the first 180 seconds per email.
+- A mistaken Human Review costs 2 Operations; an unnecessary Quarantine costs 5. Wrongly forwarding a dangerous message can cause a delayed Security incident.
+- Shift reports show change in Operations and Security since the start of the completed shift.
+- The 70% / 70% goal and existing scripts remain.
+- See `GAMEPLAY_VALIDATION.md` for sources, simulations and limitations.
+
+## v0.16.1 — small UI and helper update
+
+- App Detector marks **all recognized app mentions** in the subject and body, whether approved, unlisted, or irrelevant to the decision. It never decides whether the app is allowed.
+- Request Highlighter marks common action requests, including ordinary/benign ones; the mark is **not** a threat warning.
+- Link Inspector marks visible link domains and displays their domains without inferring reputation; links remain unclickable.
+- The **Company App List** is a simple bullet list of allowed names, without usage tags or decorative row dividers. The randomly chosen list is unchanged for a run.
+- Actual positive Operations/Security score changes show a short emoji at the **left** edge of the corresponding metric, losses at the **right** edge. Delayed incidents still affect Security only.
+- No changes to the 60 case decisions or the security rulebook.

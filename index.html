@@ -5,11 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#10151a" />
   <meta name="description" content="PROTOCOL: TRUST — an offline email screening game." />
-  <title>PROTOCOL: TRUST v0.12 // Sentinel-01</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>PROTOCOL: TRUST v0.17 // Sentinel-01</title>
+  <link rel="stylesheet" href="styles.css?v=017" />
 </head>
 <body>
-  <div class="noise" aria-hidden="true"></div>
   <div class="app-shell">
     <header class="topbar">
       <div class="brand-lockup">
@@ -17,7 +16,9 @@
         <div class="brand-copy"><strong>PROTOCOL<span class="brand-colon">:</span>TRUST</strong></div>
       </div>
       
-      <button id="sources-button" class="btn header-btn" type="button" title="Research sources and game information">ABOUT</button>
+      <div class="header-controls">
+        <button id="sources-button" class="btn header-btn" type="button" title="Research sources and game information">ABOUT</button>
+      </div>
     </header>
 
     <section class="shift-strip" aria-label="Shift progress">
@@ -47,7 +48,7 @@
       </aside>
 
       <section class="inbox-column" aria-label="Incoming message">
-        <div class="column-heading"><span>EMAIL</span><span id="queue-label">ITEM 001 / 035</span></div>
+        <div class="column-heading"><span>EMAIL</span><span id="queue-label">ITEM 001 / 060</span></div>
         <div class="mail-envelope spotlight-mail">
           <div class="message-header">
             <div class="mail-toprow"><span class="live-square"></span><span>EMAIL</span><span class="toprow-right" id="mail-id">REF: -</span></div>
@@ -63,7 +64,7 @@
           <div class="mail-body" id="mail-body" aria-live="polite"></div>
           <span id="mail-number" hidden>0001</span>
         </div>
-        <div class="desk-bar"><button class="small-link" id="policy-toggle" type="button">☷ VIEW POLICY</button></div>
+        <div class="desk-bar"><button class="small-link link-check-trigger" id="link-check-button" type="button">◈ LINK CHECK</button><button class="small-link" id="policy-toggle" type="button">☷ VIEW POLICY</button></div>
       </section>
 
       <aside class="console-column" aria-label="Decision console">
@@ -78,14 +79,14 @@
         <section class="compact-metrics" aria-label="Company health">
           <div class="metric" id="ops-metric"><div class="metric-label"><span>OPERATIONS</span><strong id="ops-value">82%</strong></div><div class="meter"><div class="meter-fill ops-fill" id="ops-fill"></div></div></div>
           <div class="metric" id="security-metric"><div class="metric-label"><span>SECURITY</span><strong id="security-value">82%</strong></div><div class="meter"><div class="meter-fill security-fill" id="security-fill"></div></div></div>
-          <div class="timing-indicator" id="time-penalty" title="A quick, correct choice improves Operations"></div>
+          <div class="goal-note" id="goal-note" aria-live="polite">GOAL: both ≥ 70%</div><div class="timing-indicator" id="time-penalty" title="Three quick, correct choices earn +1 Operations"></div>
         </section>
         <details class="activity-drawer"><summary>PAST DECISIONS</summary><div id="log-lines" class="log-lines">Message screening initialized.</div></details>
       </aside>
     </main>
-    <footer class="footer"><span>EMAIL LINKS DISABLED</span><span>v0.12</span></footer>
+    <footer class="footer"><span>EMAIL LINKS DISABLED</span><span>v0.17</span></footer>
   </div>
   <div id="modal-root" class="modal-root" aria-live="polite"></div>
-  <script src="game.js?v=0121"></script>
+  <script src="game.js?v=017"></script>
 </body>
 </html>
